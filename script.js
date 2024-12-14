@@ -1,170 +1,199 @@
 document.getElementById('run-algorithm').addEventListener('click', runAlgorithm);
 
 function runAlgorithm() {
-  const problemInput = document.getElementById('problem-input').value;
-  const resultsDiv = document.getElementById('results');
+    const problemInput = document.getElementById('problem-input').value;
+    const resultsDiv = document.getElementById('results');
 
-  if (!problemInput.trim()) {
-    resultsDiv.innerHTML = '<p>Insira um problema válido.</p>';
-    return;
-  }
+    if (!problemInput.trim()) {
+        resultsDiv.innerHTML = '<p>Insira um problema válido.</p>';
+        return;
+    }
 
-  const solution = geneticAlgorithm(problemInput);
-  displaySolution(solution);
+    const solutions = [];
+    const config = {
+        populationSize: 100,
+        generations: 50,
+        crossoverRate: 0.8,
+        mutationRate: 0.1,
+        selectionMethod: 'roulette', // Pode ser 'tournament'
+        reinsertionMethod: 'elitism' // Pode ser 'ordered'
+    };
+
+    for (let i = 0; i < 1000; i++) {
+        const solution = geneticAlgorithm(problemInput, config);
+        solutions.push(solution);
+    }
+
+    exportToExcel(solutions);
+    resultsDiv.innerHTML = '<p>Resultados exportados para Excel.</p>';
+    displaySolution(solutions)
+    console.log(solutions[0])
+
 }
 
-function geneticAlgorithm(problem) {
-  // Configurações fixas
-  const populationSize = 100;
-  const generations = 50;
-  const crossoverRate = 0.8;
-  const mutationRate = 0.1;
+function geneticAlgorithm(problem, config) {
+    let population = initializePopulation(config.populationSize);
+    let bestSolution = null;
 
-  let population = initializePopulation(populationSize);
-  let bestSolution = null;
+    for (let gen = 0; gen < config.generations; gen++) {
+        population = evaluatePopulation(population, problem);
 
-  for (let gen = 0; gen < generations; gen++) {
-    population = evaluatePopulation(population, problem);
+        const parents = selectParents(population, config.selectionMethod);
+        const offspring = crossover(parents, config.crossoverRate);
+        const mutatedOffspring = mutate(offspring, config.mutationRate);
 
-    const parents = selectParents(population);
-    const offspring = crossover(parents, crossoverRate);
-    const mutatedOffspring = mutate(offspring, mutationRate);
+        population = reinsertion(population, mutatedOffspring, config.reinsertionMethod);
+        bestSolution = population[0]; // Melhor solução até agora
 
-    population = reinsertion(population, mutatedOffspring);
+        if (bestSolution.fitness === 0) break; // Solução perfeita encontrada
+    }
 
-    bestSolution = population[0]; // Melhor solução até agora
-  }
-
-  return bestSolution;
+    return bestSolution;
 }
 
 function initializePopulation(size) {
-  const population = [];
-  while (population.length < size) {
-    const individual = [...Array(10).keys()].sort(() => Math.random() - 0.5);
-    population.push({ individual, fitness: Infinity });
-  }
-  return population;
+    const population = [];
+    while (population.length < size) {
+        const individual = [...Array(10).keys()].sort(() => Math.random() - 0.5);
+        population.push({ individual, fitness: Infinity });
+    }
+    return population;
 }
 
 function evaluatePopulation(population, problem) {
-  return population
-    .map((ind) => {
-      const fitness = evaluateFitness(ind.individual, problem);
-      return { ...ind, fitness };
-    })
-    .sort((a, b) => a.fitness - b.fitness);
+    return population
+        .map((ind) => {
+            const fitness = evaluateFitness(ind.individual, problem);
+            return { ...ind, fitness };
+        })
+        .sort((a, b) => a.fitness - b.fitness);
 }
 
 function evaluateFitness(individual, problem) {
-  const letterToDigit = mapLettersToDigits(individual);
-  const [operand1, operand2, result] = parseProblem(problem, letterToDigit);
+    const letterToDigit = mapLettersToDigits(individual, problem);
+    const { operand1, operand2, result } = parseProblem(problem, letterToDigit);
 
-  return Math.abs(operand1 + operand2 - result);
+    const calculatedValue = operand1 + operand2;
+    return Math.abs(calculatedValue - result);
 }
 
-function mapLettersToDigits(individual) {
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const mapping = {};
-  individual.forEach((digit, index) => {
-    mapping[alphabet[index]] = digit;
-  });
-  return mapping;
+function mapLettersToDigits(individual, problem) {
+    const letters = Array.from(new Set(problem.replace(/[^A-Z]/g, '')));
+    return Object.fromEntries(letters.map((letter, i) => [letter, individual[i]]));
 }
 
 function parseProblem(problem, letterToDigit) {
-  const parts = problem.toUpperCase().match(/\w+/g);
+    const [operands, result] = problem.split('=').map((s) => s.trim());
+    const [op1, op2] = operands.split('+').map((s) => s.trim());
 
-  return parts.map((word) =>
-    parseInt(
-      [...word].map((letter) => letterToDigit[letter]).join(''),
-      10
-    )
-  );
+    const operand1 = parseInt(op1.split('').map((l) => letterToDigit[l]).join(''));
+    const operand2 = parseInt(op2.split('').map((l) => letterToDigit[l]).join(''));
+    const resultValue = parseInt(result.split('').map((l) => letterToDigit[l]).join(''));
+
+    return { operand1, operand2, result: resultValue };
 }
 
-function selectParents(population) {
-  const tournamentSize = 3;
-  const parents = [];
-
-  for (let i = 0; i < population.length; i++) {
-    const tournament = [];
-    for (let j = 0; j < tournamentSize; j++) {
-      const randomIndex = Math.floor(Math.random() * population.length);
-      tournament.push(population[randomIndex]);
+function selectParents(population, method) {
+    if (method === 'roulette') {
+        return rouletteSelection(population);
+    } else if (method === 'tournament') {
+        return tournamentSelection(population);
     }
-    tournament.sort((a, b) => a.fitness - b.fitness);
-    parents.push(tournament[0]);
-  }
-
-  return parents;
+    return [];
 }
 
-function crossover(parents, rate) {
-  const offspring = [];
+function rouletteSelection(population) {
+    const totalFitness = population.reduce((sum, ind) => sum + 1 / (1 + ind.fitness), 0);
+    const probabilities = population.map((ind) => 1 / (1 + ind.fitness) / totalFitness);
 
-  for (let i = 0; i < parents.length; i += 2) {
-    const parent1 = parents[i].individual;
-    const parent2 = parents[(i + 1) % parents.length].individual;
-
-    if (Math.random() < rate) {
-      const size = parent1.length;
-      const child1 = Array(size).fill(null);
-      const child2 = Array(size).fill(null);
-
-      const start = Math.floor(Math.random() * size);
-      const end = Math.floor(Math.random() * (size - start)) + start;
-
-      for (let j = start; j <= end; j++) {
-        child1[j] = parent1[j];
-        child2[j] = parent2[j];
-      }
-
-      for (let j = 0; j < size; j++) {
-        if (!child1.includes(parent2[j])) {
-          child1[child1.indexOf(null)] = parent2[j];
+    const selected = [];
+    for (let i = 0; i < population.length; i++) {
+        const rand = Math.random();
+        let acc = 0;
+        for (let j = 0; j < population.length; j++) {
+            acc += probabilities[j];
+            if (rand <= acc) {
+                selected.push(population[j]);
+                break;
+            }
         }
-        if (!child2.includes(parent1[j])) {
-          child2[child2.indexOf(null)] = parent1[j];
+    }
+    return selected;
+}
+
+function tournamentSelection(population, tournamentSize = 3) {
+    const selected = [];
+    for (let i = 0; i < population.length; i++) {
+        const tournament = [];
+        for (let j = 0; j < tournamentSize; j++) {
+            tournament.push(population[Math.floor(Math.random() * population.length)]);
         }
-      }
-
-      offspring.push({ individual: child1, fitness: Infinity });
-      offspring.push({ individual: child2, fitness: Infinity });
-    } else {
-      offspring.push({ individual: parent1, fitness: Infinity });
-      offspring.push({ individual: parent2, fitness: Infinity });
+        tournament.sort((a, b) => a.fitness - b.fitness);
+        selected.push(tournament[0]);
     }
-  }
-
-  return offspring;
+    return selected;
 }
 
-function mutate(offspring, rate) {
-  offspring.forEach((child) => {
-    if (Math.random() < rate) {
-      const size = child.individual.length;
-      const index1 = Math.floor(Math.random() * size);
-      const index2 = Math.floor(Math.random() * size);
+function crossover(parents, crossoverRate) {
+    const offspring = [];
+    for (let i = 0; i < parents.length; i += 2) {
+        if (Math.random() < crossoverRate) {
+            const parent1 = parents[i].individual;
+            const parent2 = parents[i + 1]?.individual || parents[0].individual;
 
-      const temp = child.individual[index1];
-      child.individual[index1] = child.individual[index2];
-      child.individual[index2] = temp;
+            const cutPoint = Math.floor(Math.random() * parent1.length);
+            const child1 = parent1.slice(0, cutPoint).concat(parent2.slice(cutPoint));
+            const child2 = parent2.slice(0, cutPoint).concat(parent1.slice(cutPoint));
+
+            offspring.push({ individual: child1, fitness: Infinity });
+            offspring.push({ individual: child2, fitness: Infinity });
+        } else {
+            offspring.push(parents[i]);
+            if (parents[i + 1]) offspring.push(parents[i + 1]);
+        }
     }
-  });
-
-  return offspring;
+    return offspring;
 }
 
-function reinsertion(parents, offspring) {
-  const combined = [...parents, ...offspring].sort((a, b) => a.fitness - b.fitness);
-  const eliteCount = Math.floor(parents.length * 0.2);
-  const newPopulation = combined.slice(0, eliteCount);
+function mutate(offspring, mutationRate) {
+    return offspring.map((child) => {
+        if (Math.random() < mutationRate) {
+            const index1 = Math.floor(Math.random() * child.individual.length);
+            const index2 = Math.floor(Math.random() * child.individual.length);
 
-  return newPopulation.concat(combined.slice(eliteCount, parents.length));
+            const mutated = [...child.individual];
+            [mutated[index1], mutated[index2]] = [mutated[index2], mutated[index1]];
+
+            return { individual: mutated, fitness: Infinity };
+        }
+        return child;
+    });
 }
 
-function displaySolution(solution) {
+function reinsertion(population, offspring, method) {
+    if (method === 'elitism') {
+        const combined = [...population, ...offspring];
+        return combined.sort((a, b) => a.fitness - b.fitness).slice(0, population.length);
+    } else if (method === 'ordered') {
+        return offspring.sort((a, b) => a.fitness - b.fitness).slice(0, population.length);
+    }
+    return population;
+}
+
+function exportToExcel(solutions) {
+    const workbook = XLSX.utils.book_new();
+    const data = solutions.map((s, index) => ({
+        Execucao: index + 1,
+        Fitness: s.fitness,
+        Individuo: s.individual.join(',')
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
+    XLSX.writeFile(workbook, 'resultados_geneticos.xlsx');
+}
+
+function displaySolution2(solution) {
   const resultsDiv = document.getElementById('results');
   const letterMapping = mapLettersToDigits(solution.individual);
   const problemInput = document.getElementById('problem-input').value;
@@ -183,26 +212,29 @@ function displaySolution(solution) {
   `;
 }
 
-function displaySolution2(solution) {
-  const resultsDiv = document.getElementById('results2');
-  const letterValuesDiv = document.getElementById('letter-values2');
-  const letterMapping = mapLettersToDigits(solution.individual);
-
-  resultsDiv.innerHTML = `
-    <p>Melhor solução encontrada:</p>
-    <p>Fitness: ${solution.fitness}</p>
-  `;
-
-  letterValuesDiv.innerHTML = '';
-  for (const [letter, value] of Object.entries(letterMapping)) {
-    const letterContainer = document.createElement('div');
-    letterContainer.style.marginBottom = '8px';
-
-    letterContainer.innerHTML = `
-      <label for="${letter}">${letter}: </label>
-      <input id="${letter}" type="text" value="${value}" readonly style="width: 50px; text-align: center;" />
+function displaySolution(solution) {
+    const resultsDiv = document.getElementById('results');
+    const letterMapping = mapLettersToDigits(solution.individual);
+    const problemInput = document.getElementById('problem-input').value;
+  
+    // Parse do problema para obter os operandos e o resultado
+    const { operand1, operand2, result } = parseProblem(problemInput, letterMapping);
+  
+    // Detalhes dos valores das letras
+    const letterDetails = Object.entries(letterMapping)
+      .map(([letter, value]) => `${letter}: ${value}`)
+      .join('<br>');
+  
+    // Cálculo da expressão
+    const calculatedValue = operand1 + operand2;
+  
+    // Exibindo os resultados no HTML
+    resultsDiv.innerHTML = `
+      <p><strong>Melhor solução encontrada:</strong></p>
+      <p><strong>Valores das letras:</strong><br>${letterDetails}</p>
+      <p><strong>Operação resolvida:</strong><br>${operand1} + ${operand2} = ${calculatedValue}</p>
+      <p><strong>Fitness:</strong> ${solution.fitness}</p>
+      <p><strong>Valor esperado:</strong> ${result}</p>
     `;
-
-    letterValuesDiv.appendChild(letterContainer);
   }
-}
+  
