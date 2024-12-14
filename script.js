@@ -72,6 +72,7 @@ function mapLettersToDigits(individual) {
 
 function parseProblem(problem, letterToDigit) {
   const parts = problem.toUpperCase().match(/\w+/g);
+  
   return parts.map((word) =>
     parseInt([...word].map((letter) => letterToDigit[letter]).join(''), 10)
   );
@@ -168,8 +169,29 @@ function mutate(offspring, rate) {
     return newPopulation.concat(combined.slice(eliteCount, parents.length));
   }
   
-
-function displaySolution(solution) {
+  function displaySolution(solution) {
+    const resultsDiv = document.getElementById('results');
+    const letterMapping = mapLettersToDigits(solution.individual);
+    const problemInput = document.getElementById('problem-input').value;
+  
+    // Calcula os valores das palavras
+    const [operand1, operand2, result] = parseProblem(problemInput, letterMapping);
+  
+    // Gera a exibição das letras e seus valores
+    let letterDetails = Object.entries(letterMapping)
+      .map(([letter, value]) => `${letter}: ${value}`)
+      .join('<br>');
+  
+    // Exibe os resultados
+    resultsDiv.innerHTML = `
+      <p>Melhor solução encontrada:</p>
+      <pre>${letterDetails}</pre>
+      <p>Expressão resolvida: ${operand1} + ${operand2} = ${result}</p>
+      <p>Fitness: ${solution.fitness}</p>
+    `;
+  }
+  
+/*function displaySolution(solution) {
   const resultsDiv = document.getElementById('results');
   const letterMapping = mapLettersToDigits(solution.individual);
 
@@ -178,4 +200,29 @@ function displaySolution(solution) {
     <pre>${JSON.stringify(letterMapping, null, 2)}</pre>
     <p>Fitness: ${solution.fitness}</p>
   `;
-}
+}*/
+function displaySolution2(solution) {
+    const resultsDiv = document.getElementById('results2');
+    const letterValuesDiv = document.getElementById('letter-values2');
+    const letterMapping = mapLettersToDigits(solution.individual);
+  
+    resultsDiv.innerHTML = `
+      <p>Melhor solução encontrada:</p>
+      <p>Fitness: ${solution.fitness}</p>
+    `;
+  
+    // Limpa e insere inputs para cada letra e seu valor
+    letterValuesDiv.innerHTML = '';
+    for (const [letter, value] of Object.entries(letterMapping)) {
+      const letterContainer = document.createElement('div');
+      letterContainer.style.marginBottom = '8px';
+  
+      letterContainer.innerHTML = `
+        <label for="${letter}">${letter}: </label>
+        <input id="${letter}" type="text" value="${value}" readonly style="width: 50px; text-align: center;" />
+      `;
+  
+      letterValuesDiv.appendChild(letterContainer);
+    }
+  }
+  
