@@ -63,7 +63,7 @@
 
         <div class="form-group">
             <label for="tipo_crossover">Tipo de Crossover:</label>
-            <input type="text" id="tipo_crossover" name="tipo_crossover" value="C1" required>
+            <input type="text" id="tipo_crossover" name="tipo_crossover" value="C1">
         </div>
 
         <button type="submit" class="button">Rodar Algoritmo</button>
@@ -104,19 +104,21 @@
             .then(data => {
                 const outputDiv = document.getElementById('output');
                 outputDiv.innerHTML = `<h2>Solução Encontrada:</h2>`;
-                for (const [letra, valor] of Object.entries(data)) {
+                for (const [letra, valor] of Object.entries(data.solucao)) {
                     outputDiv.innerHTML += `${letra}: ${valor}<br>`;
                 }
-
+            
                 let send = '';
                 let more = '';
                 let money = '';
-
-                for (let letra of 'SEND') send += data[letra];
-                for (let letra of 'MORE') more += data[letra];
-                for (let letra of 'MONEY') money += data[letra];
-
+            
+                for (let letra of 'SEND') send += data.solucao[letra];
+                for (let letra of 'MORE') more += data.solucao[letra];
+                for (let letra of 'MONEY') money += data.solucao[letra];
+            
                 outputDiv.innerHTML += `<br>Verificação: ${send} + ${more} = ${money}`;
+                outputDiv.innerHTML += `<br><strong>Melhor Fitness:</strong> ${data.melhor_fitness}`;
+                console.log(data)
             })
             .catch(error => console.error('Erro:', error));
         });

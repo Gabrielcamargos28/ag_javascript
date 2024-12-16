@@ -102,19 +102,27 @@ def crossover(pai1, pai2, tipo_crossover):
         return crossover_ciclico(pai1, pai2)  # Default to Ciclico if no valid type is given
 
 # Algoritmo genético principal
+# Algoritmo genético principal
 def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, tipo_crossover):
     letras = list(set(''.join(palavras)))  # Obter as letras únicas
     populacao = gerar_populacao_inicial(tamanho_pop, letras)
+
+    melhor_fitness = float('inf')  # Inicializa com um valor alto
+    melhor_individuo = None
 
     for _ in range(geracoes):
         fitness = [calcular_fitness(individuo, letras, palavras) for individuo in populacao]
         
         # Encontrar o melhor indivíduo
-        melhor_fitness = min(fitness)
-        if melhor_fitness == 0:
+        fitness_atual = min(fitness)
+        if fitness_atual < melhor_fitness:  # Se encontrou um fitness melhor
+            melhor_fitness = fitness_atual
             melhor_individuo = populacao[fitness.index(melhor_fitness)]
-            return dict(zip(letras, melhor_individuo))
-        
+
+        if melhor_fitness == 0:
+            # Se encontrar uma solução perfeita (fitness 0)
+            return dict(zip(letras, melhor_individuo)), melhor_fitness
+
         # Seleção
         nova_populacao = []
         for _ in range(tamanho_pop // 2):
@@ -125,10 +133,10 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
         populacao = nova_populacao
 
     # Retornar a melhor solução após as gerações
-    fitness = [calcular_fitness(individuo, letras, palavras) for individuo in populacao]
-    melhor_individuo = populacao[fitness.index(min(fitness))]
-    return dict(zip(letras, melhor_individuo))
+    return dict(zip(letras, melhor_individuo)), melhor_fitness
 
+
+@app.route('/solucao', methods=['POST'])
 @app.route('/solucao', methods=['POST'])
 def obter_solucao():
     data = request.get_json()
@@ -139,9 +147,14 @@ def obter_solucao():
     taxa_mutacao = data['taxa_mutacao']
     tipo_crossover = data.get('tipo_crossover', 'C1')  # Valor padrão 'C1'
 
-    solucao = algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, tipo_crossover)
+    solucao, melhor_fitness = algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, tipo_crossover)
 
-    return jsonify(solucao)
+    # Retorna tanto a solução quanto o melhor fitness
+    return jsonify({
+        'solucao': solucao,
+        'melhor_fitness': melhor_fitness
+    })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
