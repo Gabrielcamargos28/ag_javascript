@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmo Genético - SEND + MORE = MONEY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Algoritmo Genético para SEND + MORE = MONEY</h1>
+
+    <form id="inputForm">
+        <div class="form-group">
+            <label for="palavras">Digite as palavras (separadas por vírgula):</label>
+            <input type="text" id="palavras" name="palavras" placeholder="SEND,MORE,MONEY" required>
+        </div>
+
+        <div class="form-group">
+            <label for="geracoes">Número de gerações:</label>
+            <input type="number" id="geracoes" name="geracoes" value="50" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tamanhoPop">Tamanho da população:</label>
+            <input type="number" id="tamanhoPop" name="tamanhoPop" value="100" required>
+        </div>
+
+        <div class="form-group">
+            <label for="taxaCrossover">Taxa de crossover:</label>
+            <input type="number" id="taxaCrossover" name="taxaCrossover" value="0.8" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+            <label for="taxaMutacao">Taxa de mutação:</label>
+            <input type="number" id="taxaMutacao" name="taxaMutacao" value="0.1" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tipo_crossover">Tipo de Crossover:</label>
+            <input type="text" id="tipo_crossover" name="tipo_crossover" value="C1" required>
+        </div>
+
+        <button type="submit" class="button">Rodar Algoritmo</button>
+    </form>
+
+    <div class="output" id="output"></div>
+
+    <script>
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const palavrasInput = document.getElementById('palavras').value;
+            const geracoes = parseInt(document.getElementById('geracoes').value);
+            const tamanhoPop = parseInt(document.getElementById('tamanhoPop').value);
+            const taxaCrossover = parseFloat(document.getElementById('taxaCrossover').value);
+            const taxaMutacao = parseFloat(document.getElementById('taxaMutacao').value);
+            const tipoCrossover = document.getElementById('tipo_crossover').value;
+
+            const palavras = palavrasInput.split(',').map(p => p.trim());
+
+            const requestData = {
+                palavras: palavras,
+                geracoes: geracoes,
+                tamanho_pop: tamanhoPop,
+                taxa_crossover: taxaCrossover,
+                taxa_mutacao: taxaMutacao,
+                //tipo_crossover: tipoCrossover
+            };
+
+            fetch('http://127.0.0.1:5000/solucao', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = `<h2>Solução Encontrada:</h2>`;
+                for (const [letra, valor] of Object.entries(data)) {
+                    outputDiv.innerHTML += `${letra}: ${valor}<br>`;
+                }
+
+                let send = '';
+                let more = '';
+                let money = '';
+
+                for (let letra of 'SEND') send += data[letra];
+                for (let letra of 'MORE') more += data[letra];
+                for (let letra of 'MONEY') money += data[letra];
+
+                outputDiv.innerHTML += `<br>Verificação: ${send} + ${more} = ${money}`;
+            })
+            .catch(error => console.error('Erro:', error));
+        });
+    </script>
+
+</body>
+</html>
