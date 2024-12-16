@@ -1,0 +1,672 @@
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 10042
+Solução: {'E': 9, 'M': 2, 'N': 0, 'R': 4, 'O': 1, 'S': 8, 'Y': 7, 'D': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 10093
+Solução: {'E': 5, 'M': 1, 'N': 2, 'R': 3, 'O': 6, 'S': 4, 'Y': 7, 'D': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 1057
+Solução: {'E': 4, 'M': 1, 'N': 5, 'R': 3, 'O': 0, 'S': 8, 'Y': 7, 'D': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 14223
+Solução: {'E': 0, 'M': 2, 'N': 7, 'R': 1, 'O': 4, 'S': 8, 'Y': 6, 'D': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 10065
+Solução: {'E': 0, 'M': 1, 'N': 7, 'R': 6, 'O': 5, 'S': 4, 'Y': 3, 'D': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 2024
+Solução: {'E': 8, 'M': 1, 'N': 9, 'R': 6, 'O': 0, 'S': 7, 'Y': 5, 'D': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 19901
+Solução: {'E': 5, 'M': 2, 'N': 3, 'R': 1, 'O': 9, 'S': 6, 'Y': 4, 'D': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 9770
+Solução: {'E': 7, 'M': 2, 'N': 6, 'R': 3, 'O': 1, 'S': 9, 'Y': 5, 'D': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 5553
+Solução: {'E': 9, 'M': 1, 'N': 5, 'R': 8, 'O': 0, 'S': 3, 'Y': 4, 'D': 2}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 6921
+Solução: {'E': 6, 'M': 1, 'N': 8, 'R': 5, 'O': 2, 'S': 4, 'Y': 0, 'D': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 2176
+Solução: {'E': 5, 'M': 1, 'N': 8, 'R': 9, 'O': 0, 'S': 7, 'Y': 3, 'D': 2}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 22263
+Solução: {'E': 9, 'M': 2, 'N': 8, 'R': 4, 'O': 6, 'S': 1, 'Y': 5, 'D': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 4376
+Solução: {'E': 9, 'M': 1, 'N': 7, 'R': 3, 'O': 4, 'S': 8, 'Y': 0, 'D': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 6950
+Solução: {'E': 5, 'M': 1, 'N': 9, 'R': 0, 'O': 4, 'S': 6, 'Y': 2, 'D': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 5266
+Solução: {'E': 8, 'M': 1, 'N': 3, 'R': 7, 'O': 2, 'S': 5, 'Y': 0, 'D': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 3320
+Solução: {'E': 5, 'M': 1, 'N': 9, 'R': 3, 'O': 0, 'S': 6, 'Y': 2, 'D': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 7434
+Solução: {'N': 5, 'Y': 7, 'S': 3, 'O': 2, 'E': 9, 'R': 0, 'M': 1, 'D': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 9750
+Solução: {'N': 0, 'Y': 7, 'S': 2, 'O': 4, 'E': 9, 'R': 3, 'M': 1, 'D': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 5284
+Solução: {'N': 4, 'Y': 9, 'S': 6, 'O': 3, 'E': 8, 'R': 5, 'M': 1, 'D': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 6312
+Solução: {'N': 6, 'Y': 8, 'S': 3, 'O': 0, 'E': 2, 'R': 5, 'M': 1, 'D': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 20564
+Solução: {'N': 8, 'Y': 4, 'S': 7, 'O': 0, 'E': 1, 'R': 6, 'M': 3, 'D': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 7798
+Solução: {'N': 6, 'Y': 7, 'S': 3, 'O': 2, 'E': 5, 'R': 9, 'M': 1, 'D': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 4765
+Solução: {'N': 6, 'Y': 2, 'S': 9, 'O': 5, 'E': 3, 'R': 0, 'M': 1, 'D': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 3574
+Solução: {'N': 9, 'Y': 3, 'S': 6, 'O': 0, 'E': 2, 'R': 5, 'M': 1, 'D': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 11303
+Solução: {'N': 5, 'Y': 8, 'S': 7, 'O': 0, 'E': 1, 'R': 6, 'M': 2, 'D': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 4339
+Solução: {'N': 2, 'Y': 6, 'S': 9, 'O': 5, 'E': 3, 'R': 7, 'M': 1, 'D': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 25381
+Solução: {'N': 6, 'Y': 0, 'S': 8, 'O': 7, 'E': 4, 'R': 9, 'M': 3, 'D': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 1152
+Solução: {'N': 7, 'Y': 6, 'S': 8, 'O': 0, 'E': 5, 'R': 2, 'M': 1, 'D': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 14305
+Solução: {'N': 5, 'Y': 4, 'S': 2, 'O': 8, 'E': 3, 'R': 7, 'M': 1, 'D': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 25058
+Solução: {'N': 0, 'Y': 6, 'S': 9, 'O': 8, 'E': 1, 'R': 5, 'M': 3, 'D': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 3799
+Solução: {'N': 5, 'Y': 3, 'S': 7, 'O': 2, 'E': 4, 'R': 9, 'M': 1, 'D': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 400
+Solução: {'N': 3, 'Y': 6, 'S': 8, 'O': 0, 'E': 9, 'R': 5, 'M': 1, 'D': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 2338
+Solução: {'R': 9, 'E': 7, 'M': 1, 'Y': 0, 'D': 5, 'S': 8, 'O': 2, 'N': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 8769
+Solução: {'R': 9, 'E': 8, 'M': 1, 'Y': 7, 'D': 0, 'S': 5, 'O': 6, 'N': 2}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 10920
+Solução: {'R': 6, 'E': 4, 'M': 2, 'Y': 3, 'D': 9, 'S': 8, 'O': 1, 'N': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 4217
+Solução: {'R': 2, 'E': 7, 'M': 1, 'Y': 9, 'D': 5, 'S': 8, 'O': 4, 'N': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 159
+Solução: {'R': 6, 'E': 5, 'M': 1, 'Y': 3, 'D': 7, 'S': 9, 'O': 0, 'N': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 7072
+Solução: {'R': 5, 'E': 4, 'M': 1, 'Y': 9, 'D': 3, 'S': 8, 'O': 7, 'N': 2}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 7015
+Solução: {'R': 0, 'E': 6, 'M': 1, 'Y': 3, 'D': 2, 'S': 9, 'O': 8, 'N': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 6188
+Solução: {'R': 7, 'E': 6, 'M': 1, 'Y': 9, 'D': 5, 'S': 4, 'O': 2, 'N': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 5033
+Solução: {'R': 5, 'E': 8, 'M': 1, 'Y': 3, 'D': 2, 'S': 4, 'O': 0, 'N': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 103
+Solução: {'R': 7, 'E': 6, 'M': 1, 'Y': 2, 'D': 3, 'S': 9, 'O': 0, 'N': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 40030
+Solução: {'R': 2, 'E': 7, 'M': 5, 'Y': 6, 'D': 9, 'S': 8, 'O': 4, 'N': 1}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 312
+Solução: {'R': 5, 'E': 2, 'M': 1, 'Y': 8, 'D': 4, 'S': 9, 'O': 0, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 11513
+Solução: {'R': 4, 'E': 3, 'M': 1, 'Y': 2, 'D': 6, 'S': 5, 'O': 8, 'N': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 2768
+Solução: {'R': 2, 'E': 7, 'M': 1, 'Y': 5, 'D': 0, 'S': 9, 'O': 3, 'N': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 7980
+Solução: {'R': 8, 'E': 4, 'M': 1, 'Y': 0, 'D': 6, 'S': 3, 'O': 2, 'N': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 6790
+Solução: {'R': 5, 'E': 4, 'M': 1, 'Y': 6, 'D': 2, 'S': 9, 'O': 8, 'N': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 14683
+Solução: {'N': 6, 'Y': 8, 'O': 4, 'D': 0, 'E': 5, 'M': 2, 'R': 1, 'S': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 16241
+Solução: {'N': 3, 'Y': 9, 'O': 4, 'D': 1, 'E': 7, 'M': 2, 'R': 0, 'S': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 3400
+Solução: {'N': 6, 'Y': 4, 'O': 3, 'D': 5, 'E': 9, 'M': 1, 'R': 2, 'S': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 304
+Solução: {'N': 4, 'Y': 8, 'O': 0, 'D': 5, 'E': 7, 'M': 1, 'R': 3, 'S': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 1201
+Solução: {'N': 0, 'Y': 4, 'O': 2, 'D': 7, 'E': 6, 'M': 1, 'R': 5, 'S': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 229
+Solução: {'N': 8, 'Y': 6, 'O': 0, 'D': 2, 'E': 5, 'M': 1, 'R': 4, 'S': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 2830
+Solução: {'N': 0, 'Y': 6, 'O': 3, 'D': 7, 'E': 9, 'M': 1, 'R': 5, 'S': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 11842
+Solução: {'N': 4, 'Y': 8, 'O': 0, 'D': 1, 'E': 5, 'M': 2, 'R': 7, 'S': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 5314
+Solução: {'N': 2, 'Y': 7, 'O': 5, 'D': 9, 'E': 4, 'M': 1, 'R': 0, 'S': 8}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 4389
+Solução: {'N': 3, 'Y': 5, 'O': 0, 'D': 7, 'E': 9, 'M': 1, 'R': 6, 'S': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 3488
+Solução: {'N': 6, 'Y': 5, 'O': 4, 'D': 0, 'E': 7, 'M': 1, 'R': 2, 'S': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 25727
+Solução: {'N': 8, 'Y': 0, 'O': 6, 'D': 9, 'E': 4, 'M': 3, 'R': 2, 'S': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 20708
+Solução: {'N': 5, 'Y': 2, 'O': 1, 'D': 8, 'E': 6, 'M': 3, 'R': 9, 'S': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 8511
+Solução: {'N': 1, 'Y': 5, 'O': 0, 'D': 8, 'E': 6, 'M': 2, 'R': 3, 'S': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 4045
+Solução: {'N': 2, 'Y': 8, 'O': 5, 'D': 6, 'E': 7, 'M': 1, 'R': 0, 'S': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 10041
+Solução: {'N': 9, 'Y': 6, 'O': 5, 'D': 2, 'E': 3, 'M': 1, 'R': 0, 'S': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 8196
+Solução: {'E': 2, 'D': 8, 'O': 4, 'N': 9, 'S': 5, 'R': 3, 'M': 1, 'Y': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 12289
+Solução: {'E': 2, 'D': 6, 'O': 8, 'N': 3, 'S': 4, 'R': 0, 'M': 1, 'Y': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 12056
+Solução: {'E': 6, 'D': 8, 'O': 7, 'N': 4, 'S': 3, 'R': 5, 'M': 1, 'Y': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 14553
+Solução: {'E': 8, 'D': 9, 'O': 1, 'N': 5, 'S': 4, 'R': 6, 'M': 2, 'Y': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 9422
+Solução: {'E': 3, 'D': 0, 'O': 9, 'N': 7, 'S': 8, 'R': 4, 'M': 1, 'Y': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 29269
+Solução: {'E': 0, 'D': 8, 'O': 9, 'N': 2, 'S': 6, 'R': 1, 'M': 3, 'Y': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 20326
+Solução: {'E': 9, 'D': 5, 'O': 2, 'N': 4, 'S': 8, 'R': 1, 'M': 3, 'Y': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 3367
+Solução: {'E': 4, 'D': 2, 'O': 0, 'N': 9, 'S': 6, 'R': 8, 'M': 1, 'Y': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 3582
+Solução: {'E': 2, 'D': 3, 'O': 0, 'N': 9, 'S': 6, 'R': 5, 'M': 1, 'Y': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 12381
+Solução: {'E': 0, 'D': 5, 'O': 3, 'N': 8, 'S': 9, 'R': 4, 'M': 2, 'Y': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 27533
+Solução: {'E': 6, 'D': 5, 'O': 9, 'N': 0, 'S': 7, 'R': 2, 'M': 3, 'Y': 4}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 11873
+Solução: {'E': 9, 'D': 0, 'O': 8, 'N': 6, 'S': 4, 'R': 5, 'M': 1, 'Y': 2}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 2979
+Solução: {'E': 8, 'D': 3, 'O': 4, 'N': 2, 'S': 9, 'R': 7, 'M': 1, 'Y': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 23266
+Solução: {'E': 6, 'D': 5, 'O': 1, 'N': 0, 'S': 4, 'R': 9, 'M': 3, 'Y': 7}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 380
+Solução: {'E': 3, 'D': 2, 'O': 0, 'N': 8, 'S': 9, 'R': 7, 'M': 1, 'Y': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 1740
+Solução: {'E': 6, 'D': 3, 'O': 0, 'N': 4, 'S': 7, 'R': 8, 'M': 1, 'Y': 9}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 3
+Solução: {'N': 7, 'D': 3, 'Y': 2, 'M': 1, 'S': 9, 'E': 6, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 1
+Solução: {'N': 5, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 4, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 12
+Solução: {'N': 5, 'D': 6, 'Y': 2, 'M': 1, 'S': 9, 'E': 4, 'R': 7, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 7
+Solução: {'N': 3, 'D': 6, 'Y': 5, 'M': 1, 'S': 9, 'E': 2, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 3
+Solução: {'N': 7, 'D': 3, 'Y': 2, 'M': 1, 'S': 9, 'E': 6, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 2
+Solução: {'N': 7, 'D': 4, 'Y': 2, 'M': 1, 'S': 9, 'E': 6, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 1
+Solução: {'N': 7, 'D': 5, 'Y': 2, 'M': 1, 'S': 9, 'E': 6, 'R': 8, 'O': 0}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 0
+Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
+--------------------------------------------------
