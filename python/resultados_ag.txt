@@ -670,3 +670,115 @@ Método de Seleção: S2
 Fitness: 0
 Solução: {'N': 6, 'D': 7, 'Y': 2, 'M': 1, 'S': 9, 'E': 5, 'R': 8, 'O': 0}
 --------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 27
+Solução: {'Y': 4, 'D': 5, 'R': 6, 'M': 1, 'O': 0, 'S': 9, 'E': 2, 'N': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 92
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 3, 'N': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 0
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 0
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 7
+Solução: {'Y': 4, 'D': 5, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 2, 'N': 3}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 14
+Solução: {'Y': 2, 'D': 3, 'R': 7, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 1
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 4, 'N': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.05
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 0
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 12
+Solução: {'Y': 2, 'D': 6, 'R': 7, 'M': 1, 'O': 0, 'S': 9, 'E': 4, 'N': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 5
+Solução: {'Y': 6, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 4, 'N': 5}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 0
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.6
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 0
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S1
+Fitness: 1
+Solução: {'Y': 3, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C1
+Método de Seleção: S2
+Fitness: 0
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S1
+Fitness: 0
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------
+Taxa de Crossover: 0.8
+Taxa de Mutação: 0.1
+Tipo de Crossover: C2
+Método de Seleção: S2
+Fitness: 0
+Solução: {'Y': 2, 'D': 7, 'R': 8, 'M': 1, 'O': 0, 'S': 9, 'E': 5, 'N': 6}
+--------------------------------------------------

@@ -174,7 +174,7 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
     })
 
     df = pd.DataFrame(resultados)
-    df.to_excel('resultados_ag.xlsx', index=False)
+    #df.to_excel('resultados_ag.xlsx', index=False)
 
     return {'fitness': min(fitness), 'solucao': dict(zip(letras, melhor_individuo))}
 

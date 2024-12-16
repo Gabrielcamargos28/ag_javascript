@@ -3,71 +3,64 @@ import random
 from flask_cors import CORS  
 
 app = Flask(__name__)
-CORS(app)  # Permitir CORS em todas as rotas
+CORS(app)
 
-# Função para calcular o fitness de um indivíduo
 def calcular_fitness(individuo, letras, palavras):
     letter_to_digit = {letras[i]: individuo[i] for i in range(len(letras))}
 
     def palavra_para_numero(palavra):
         numero = ''.join([str(letter_to_digit[letra]) for letra in palavra])
-        if numero[0] == '0':  # Não pode começar com zero
+        if numero[0] == '0': 
             return None
         return int(numero)
 
+
     valores_palavras = [palavra_para_numero(palavra) for palavra in palavras]
     if None in valores_palavras:
-        return float('inf')  # Fitness alto se houver número inválido
+        return float('inf') 
 
     soma = sum(valores_palavras[:-1])
     resultado = valores_palavras[-1]
     return abs(soma - resultado)
 
-# Função para gerar uma população inicial
 def gerar_populacao_inicial(tamanho, letras):
     populacao = []
     while len(populacao) < tamanho:
-        individuo = random.sample(range(10), len(letras))  # Evita repetição de números
+        individuo = random.sample(range(10), len(letras))  
         populacao.append(individuo)
     return populacao
 
-# Função de mutação
 def mutacao(individuo, taxa_mutacao):
     if random.random() < taxa_mutacao:
         i, j = random.sample(range(len(individuo)), 2)
         individuo[i], individuo[j] = individuo[j], individuo[i]
     return individuo
 
-# Função de crossover cíclico
 def crossover_ciclico(pai1, pai2):
     filho1 = pai1.copy()
     filho2 = pai2.copy()
     
-    # Marcadores para saber quais genes já foram tratados
     visitados1 = [False] * len(pai1)
     visitados2 = [False] * len(pai2)
     
     i = 0
-    while not all(visitados1):  # Continua até todos os genes de filho1 serem preenchidos
+    while not all(visitados1):  
         if not visitados1[i]:
-            # Preenche o gene do filho1 com o gene correspondente do pai2
+            
             filho1[i] = pai2[i]
             visitados1[i] = True
             
-            # Busca a próxima posição no ciclo
             i = pai1.index(filho1[i]) if filho1[i] in pai1 else (i + 1) % len(pai1)
         else:
-            # Se o gene de filho1 já foi visitado, passa para o próximo
+
             i = (i + 1) % len(pai1)
     
-    # Preenche os genes restantes do filho2
     for j in range(len(pai2)):
         if not visitados2[j]:
             filho2[j] = pai1[j]
     
     return filho1, filho2
 
-# Função de crossover PMX
 def crossover_pmx(pai1, pai2):
     size = len(pai1)
     filho1 = [-1] * size
@@ -92,38 +85,36 @@ def crossover_pmx(pai1, pai2):
 
     return filho1, filho2
 
-# Função de crossover
 def crossover(pai1, pai2, tipo_crossover):
     if tipo_crossover == 'C1':
         return crossover_ciclico(pai1, pai2)
     elif tipo_crossover == 'C2':
         return crossover_pmx(pai1, pai2)
     else:
-        return crossover_ciclico(pai1, pai2)  # Default to Ciclico if no valid type is given
+        return crossover_ciclico(pai1, pai2) 
 
-# Algoritmo genético principal
-# Algoritmo genético principal
+
 def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, tipo_crossover):
-    letras = list(set(''.join(palavras)))  # Obter as letras únicas
+    letras = list(set(''.join(palavras))) 
     populacao = gerar_populacao_inicial(tamanho_pop, letras)
 
-    melhor_fitness = float('inf')  # Inicializa com um valor alto
+    melhor_fitness = float('inf')
     melhor_individuo = None
 
     for _ in range(geracoes):
         fitness = [calcular_fitness(individuo, letras, palavras) for individuo in populacao]
         
-        # Encontrar o melhor indivíduo
+        
         fitness_atual = min(fitness)
-        if fitness_atual < melhor_fitness:  # Se encontrou um fitness melhor
+        if fitness_atual < melhor_fitness: 
             melhor_fitness = fitness_atual
             melhor_individuo = populacao[fitness.index(melhor_fitness)]
 
         if melhor_fitness == 0:
-            # Se encontrar uma solução perfeita (fitness 0)
+            
             return dict(zip(letras, melhor_individuo)), melhor_fitness
 
-        # Seleção
+        
         nova_populacao = []
         for _ in range(tamanho_pop // 2):
             pai1, pai2 = random.choices(populacao, weights=[1 / (f + 1e-6) for f in fitness], k=2)
@@ -132,7 +123,6 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
         
         populacao = nova_populacao
 
-    # Retornar a melhor solução após as gerações
     return dict(zip(letras, melhor_individuo)), melhor_fitness
 
 
@@ -145,11 +135,11 @@ def obter_solucao():
     tamanho_pop = data['tamanho_pop']
     taxa_crossover = data['taxa_crossover']
     taxa_mutacao = data['taxa_mutacao']
-    tipo_crossover = data.get('tipo_crossover', 'C1')  # Valor padrão 'C1'
+    tipo_crossover = data.get('tipo_crossover', 'C1') 
 
     solucao, melhor_fitness = algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, tipo_crossover)
 
-    # Retorna tanto a solução quanto o melhor fitness
+    
     return jsonify({
         'solucao': solucao,
         'melhor_fitness': melhor_fitness
