@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import random
 import time
 from flask_cors import CORS
+import pandas as pd  
 
 app = Flask(__name__)
 CORS(app)
@@ -11,19 +12,31 @@ def calcular_fitness(individuo, letras, palavras):
     letter_to_digit = {letras[i]: individuo[i] for i in range(len(letras))}
 
     def palavra_para_numero(palavra):
-        numero = ''.join([str(letter_to_digit[letra]) for letra in palavra])
+        numero = ''
+        for letra in palavra:
+            if letra not in letter_to_digit:
+                print(f"Erro: A letra {letra} não está mapeada para um número.")
+                return None  # Ou pode retornar um valor especial
+            numero += str(letter_to_digit[letra])
         return int(numero)
 
-    try:
-        valores_palavras = [palavra_para_numero(palavra) for palavra in palavras]
-        soma = sum(valores_palavras[:-1])
-        resultado = valores_palavras[-1]
-        return abs(soma - resultado)
-    except KeyError:  # Caso haja letras sem mapeamento
-        return float('inf')
+    valores_palavras = []
+    for palavra in palavras:
+        numero = palavra_para_numero(palavra)
+        if numero is None:
+            return float('inf')  # Caso algum erro aconteça na conversão
+
+        valores_palavras.append(numero)
+
+    soma = sum(valores_palavras[:-1])
+    resultado = valores_palavras[-1]
+    return abs(soma - resultado)
+
 
 # População Inicial aleatória sem repetições
 def gerar_populacao_inicial(tamanho, letras):
+    if len(letras) > 10:
+        raise ValueError(f"O número de letras ({len(letras)}) é maior do que o número de dígitos disponíveis (10).")
     populacao = []
     while len(populacao) < tamanho:
         individuo = random.sample(range(10), len(letras))
@@ -113,7 +126,7 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
     melhor_fitness, melhor_individuo = float('inf'), None
     geracao_melhor = 0
     
-    for _ in range(geracoes):
+    for g in range(geracoes):
         fitness = [calcular_fitness(ind, letras, palavras) for ind in populacao]
 
         if metodo_selecao == 'S1':
@@ -143,12 +156,12 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
             melhor_fitness = melhor_atual
             melhor_individuo = populacao[fitness.index(melhor_fitness)]
             geracao_melhor = g
+            
         if melhor_fitness == 0:
             break
 
-    return dict(zip(letras, melhor_individuo)), melhor_fitness
+    return dict(zip(letras, melhor_individuo)), melhor_fitness, geracao_melhor
 
-# Endpoint principal
 @app.route('/solucao', methods=['POST'])
 def obter_solucao():
     data = request.get_json()
@@ -160,18 +173,39 @@ def obter_solucao():
     metodo_selecao = data['metodo_selecao']
     tipo_crossover = data['tipo_crossover']
     metodo_reinsercao = data['metodo_reinsercao']
-
+    
+    convergencia_encontrada = False
+    num_execucoes = 0
     inicio = time.time()
-    solucao, fitness = algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, metodo_selecao, tipo_crossover, metodo_reinsercao)
-    fim = time.time()
+    
+    while not convergencia_encontrada and num_execucoes < 1000:  # Executar até achar a solução ou 1000 execuções
+        num_execucoes += 1
+        
+        solucao, fitness, geracao_melhor = algoritmo_genetico(
+            palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, 
+            metodo_selecao, tipo_crossover, metodo_reinsercao
+        )
+        
+        if fitness == 0:
+            convergencia_encontrada = True
 
+    fim = time.time()
+    
+    if not convergencia_encontrada:
+        return jsonify({
+            'erro': 'Não foi possível encontrar uma solução válida em 1000 execuções.'
+        })
+    
     return jsonify({
         'solucao': solucao,
         'fitness': fitness,
-        'tempo_execucao': fim - inicio
+        'geracao_melhor': geracao_melhor,
+        'tempo_execucao': fim - inicio,
+        'num_execucoes': num_execucoes
     })
 
 
+@app.route('/report', methods=['GET'])
 def executar_testes():
     palavras = ['SEND', 'MORE', 'MONEY']  # Problema base
     geracoes = 50
@@ -188,12 +222,14 @@ def executar_testes():
     metodos_reinsercao = ['R1', 'R2']  # Ordenada (R1), Elitismo (R2)
 
     # Loop por todas as 24 configurações
+    print("INICIANDO")
     for tc in taxas_crossover:
         for tm in taxas_mutacao:
             for sel in metodos_selecao:
                 for cx in tipos_crossover:
                     for rein in metodos_reinsercao:
-                        # Se reinserção for R2, taxa de crossover deve ser 0.8
+                        print(f"Testando configuração: {tc}, {tm}, {sel}, {cx}, {rein}")
+                        
                         taxa_crossover = 0.8 if rein == 'R2' else tc
                         configuracao = {
                             'taxa_crossover': taxa_crossover,
@@ -208,46 +244,51 @@ def executar_testes():
                         tempos_execucao = []
 
                         # Executar 1000 vezes
-                        for _ in range(1000):
+                        for i in range(10):
+                            print(f"Executando iteração {i + 1}/1000")
                             inicio = time.time()
-                            solucao, fitness = algoritmo_genetico(
+
+                            # Executar o algoritmo genético
+                            solucao, fitness, geracao_melhor = algoritmo_genetico(
                                 palavras, geracoes, tamanho_pop,
                                 taxa_crossover, tm, sel, cx, rein
                             )
                             fim = time.time()
 
+                            tempo_execucao_individual = fim - inicio
+                            tempos_execucao.append(tempo_execucao_individual)
+
+                            # Log do tempo de execução individual
+                            print(f"Tempo de execução da iteração {i + 1}: {tempo_execucao_individual:.2f} segundos")
+
                             # Verifica se solução válida foi encontrada
-                            if fitness == 0:
+                            if fitness == 0:  # Ajuste para pegar a estrutura da resposta
                                 convergencias += 1
 
-                            tempos_execucao.append(fim - inicio)
+                        # Calcular o tempo médio de execução
+                        tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
 
-                        # Armazena resultados
+                        # Armazenar resultados
                         resultado = {
-                            'configuracao': configuracao,
+                            'taxa_crossover': taxa_crossover,
+                            'taxa_mutacao': tm,
+                            'metodo_selecao': sel,
+                            'tipo_crossover': cx,
+                            'metodo_reinsercao': rein,
                             'percentual_convergencia': (convergencias / 1000) * 100,
-                            'tempo_medio': sum(tempos_execucao) / len(tempos_execucao)
+                            'fitness': fitness,
+                            'tempo_medio': tempo_medio
                         }
                         resultados.append(resultado)
+
                         print(f"Configuração: {configuracao} - Convergência: {resultado['percentual_convergencia']}% - Tempo Médio: {resultado['tempo_medio']:.2f} segundos")
 
-    # Ordenar resultados por convergência e tempo
-    resultados.sort(key=lambda x: (-x['percentual_convergencia'], x['tempo_medio']))
+    # Salvar resultados em um arquivo Excel
+    df = pd.DataFrame(resultados)
+    df.to_excel('resultados_ag.xlsx', index=False)  # Salva em um arquivo Excel
 
-    # Exibir as 4 melhores configurações
-    print("\nAs 4 melhores configurações:")
-    for i in range(4):
-        print(f"{i+1}. {resultados[i]['configuracao']} - Convergência: {resultados[i]['percentual_convergencia']}% - Tempo Médio: {resultados[i]['tempo_medio']:.2f} segundos")
-
-    # Salvar em um arquivo (opcional)
-    with open('resultados_ag.txt', 'w') as f:
-        for r in resultados:
-            f.write(f"{r}\n")
+    print("\nResultados salvos no arquivo 'resultados_ag.xlsx'.")
 
 if __name__ == '__main__':
-    executar_testes()
-
-
-
-if __name__ == '__main__':
+    #executar_testes()
     app.run(debug=True)

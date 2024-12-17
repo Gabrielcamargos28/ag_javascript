@@ -85,10 +85,13 @@
             </select>
         </div>
 
-        
-
         <button type="submit" class="button">Rodar Algoritmo</button>
     </form>
+
+        <!-- Botão para gerar o relatório -->
+        
+        <button id="gerarRelatorio" class="button">Gerar Relatório</button>
+        
 
     <div class="output" id="output"></div>
 
@@ -129,23 +132,50 @@
             .then(data => {
                 const outputDiv = document.getElementById('output');
                 outputDiv.innerHTML = `<h2>Solução Encontrada:</h2>`;
-                for (const [letra, valor] of Object.entries(data.solucao)) {
-                    outputDiv.innerHTML += `${letra}: ${valor}<br>`;
+
+                if (data.solucao) {
+                    for (const [letra, valor] of Object.entries(data.solucao)) {
+                        outputDiv.innerHTML += `${letra}: ${valor !== undefined ? valor : 'Não definido'}<br>`;
+                    }
+
+                    let send = '';
+                    let more = '';
+                    let money = '';
+
+                    for (let letra of 'SEND') send += data.solucao[letra] !== undefined ? data.solucao[letra] : 0;
+                    for (let letra of 'MORE') more += data.solucao[letra] !== undefined ? data.solucao[letra] : 0;
+                    for (let letra of 'MONEY') money += data.solucao[letra] !== undefined ? data.solucao[letra] : 0;
+
+                    outputDiv.innerHTML += `<br>Verificação: ${send} + ${more} = ${money}`;
+                } else {
+                    outputDiv.innerHTML += `<p>Não foi possível calcular a solução.</p>`;
                 }
-            
-                let send = '';
-                let more = '';
-                let money = '';
-            
-                for (let letra of 'SEND') send += data.solucao[letra];
-                for (let letra of 'MORE') more += data.solucao[letra];
-                for (let letra of 'MONEY') money += data.solucao[letra];
-            
-                outputDiv.innerHTML += `<br>Verificação: ${send} + ${more} = ${money}`;
-                outputDiv.innerHTML += `<br><strong>Melhor Fitness:</strong> ${data.melhor_fitness}`;
-                console.log(data)
+
+                outputDiv.innerHTML += `<br><strong>Melhor Fitness:</strong> ${data.fitness !== undefined ? data.fitness : 'Não disponível'}`;
+                outputDiv.innerHTML += `<br><strong>Tempo de execução:</strong> ${data.tempo_execucao !== undefined ? data.tempo_execucao : 'Não disponível'}`;
+                console.log(data);
             })
-            .catch(error => console.error('Erro:', error));
+            .catch(error => {
+                console.error('Erro:', error);
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = 'Erro ao processar a solicitação. Tente novamente.';
+            });
+        });
+        document.getElementById('gerarRelatorio').addEventListener('click', function() {
+            fetch('http://127.0.0.1:5000/report', {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = `<h2>Relatório Gerado:</h2>`;
+                outputDiv.innerHTML += `<p>${data.status}</p>`;
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = 'Erro ao gerar o relatório. Tente novamente.';
+            });
         });
     </script>
 
