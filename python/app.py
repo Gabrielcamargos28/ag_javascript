@@ -215,6 +215,7 @@ def executar_testes():
 
     configuracoes = []
     resultados = []
+    writer = pd.ExcelWriter('resultados_ag.xlsx', engine='xlsxwriter')  # Cria um writer para o Excel
 
     # Configurações de teste
     taxas_crossover = [0.6, 0.8]
@@ -223,65 +224,81 @@ def executar_testes():
     tipos_crossover = ['C1', 'C2']
     metodos_reinsercao = ['R1', 'R2']
 
-    for tc in taxas_crossover:
-        for tm in taxas_mutacao:
-            for sel in metodos_selecao:
-                for cx in tipos_crossover:
-                    for rein in metodos_reinsercao:
-                        taxa_crossover = 0.8 if rein == 'R2' else tc
-                        configuracao = {
-                            'taxa_crossover': taxa_crossover,
-                            'taxa_mutacao': tm,
-                            'metodo_selecao': sel,
-                            'tipo_crossover': cx,
-                            'metodo_reinsercao': rein
-                        }
-                        configuracoes.append(configuracao)
+    for idx, (tc, tm, sel, cx, rein) in enumerate([
+        (tc, tm, sel, cx, rein)
+        for tc in taxas_crossover
+        for tm in taxas_mutacao
+        for sel in metodos_selecao
+        for cx in tipos_crossover
+        for rein in metodos_reinsercao
+    ]):
+        taxa_crossover = 0.8 if rein == 'R2' else tc
 
-                        convergencias = 0
-                        tempos_execucao = []
+        configuracao = {
+            'taxa_crossover': taxa_crossover,
+            'taxa_mutacao': tm,
+            'metodo_selecao': sel,
+            'tipo_crossover': cx,
+            'metodo_reinsercao': rein
+        }
+        configuracoes.append(configuracao)
 
-                        for i in range(10):
-                            print(f"Executando iteração {i + 1}/10")
-                            inicio = time.time()
-                            solucao, fitness, geracao_melhor = algoritmo_genetico(
-                                palavras, geracoes, tamanho_pop,
-                                taxa_crossover, tm, sel, cx, rein
-                            )
-                            fim = time.time()
-                            tempo_execucao_individual = fim - inicio
-                            tempos_execucao.append(tempo_execucao_individual)
+        convergencias = 0
+        tempos_execucao = []
+        resultados_detalhados = []
 
-                            if fitness == 0:  # Solução válida
-                                convergencias += 1
+        for i in range(1000):  # 1000 iterações por configuração
+            print(f"Executando configuração {idx + 1}/24, iteração {i + 1}/1000")
+            inicio = time.time()
+            solucao, fitness, geracao_melhor = algoritmo_genetico(
+                palavras, geracoes, tamanho_pop,
+                taxa_crossover, tm, sel, cx, rein
+            )
+            fim = time.time()
+            tempo_execucao_individual = fim - inicio
+            tempos_execucao.append(tempo_execucao_individual)
 
-                        tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
-                        resultado = {
-                            'taxa_crossover': taxa_crossover,
-                            'taxa_mutacao': tm,
-                            'metodo_selecao': sel,
-                            'tipo_crossover': cx,
-                            'metodo_reinsercao': rein,
-                            'percentual_convergencia': (convergencias / 1000) * 100,
-                            'fitness': fitness,
-                            'tempo_medio': tempo_medio,
-                            'configuracao': configuracao
-                        }
-                        resultados.append(resultado)
+            if fitness == 0:  # Solução válida
+                convergencias += 1
 
-    # Ordenar as combinações pelas melhores métricas (por exemplo, maior convergência)
-    resultados_ordenados = sorted(resultados, key=lambda x: (x['percentual_convergencia'], -x['tempo_medio']), reverse=True)
+            # Salva os resultados individuais
+            resultado_individual = {
+                'execucao': i + 1,
+                'tempo_execucao': tempo_execucao_individual,
+                'fitness': fitness,
+                'solucao_valida': fitness == 0
+            }
+            resultados_detalhados.append(resultado_individual)
 
-    # Selecionar as 4 melhores configurações
-    melhores_configuracoes = resultados_ordenados[:4]
+        # Persistindo os 1000 resultados individuais em uma aba separada
+        df_detalhado = pd.DataFrame(resultados_detalhados)
+        aba_nome = f'Config_{idx + 1}'  # Nome da aba no Excel
+        df_detalhado.to_excel(writer, sheet_name=aba_nome, index=False)
 
-    # Salvar resultados gerais
-    df_geral = pd.DataFrame(resultados)
-    df_geral.to_excel('resultados_ag.xlsx', index=False)
+        # Resumo da configuração
+        tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
+        resultado = {
+            'taxa_crossover': taxa_crossover,
+            'taxa_mutacao': tm,
+            'metodo_selecao': sel,
+            'tipo_crossover': cx,
+            'metodo_reinsercao': rein,
+            'percentual_convergencia': (convergencias / 1000) * 100,
+            'tempo_medio': tempo_medio
+        }
+        resultados.append(resultado)
+
+    # Salva o resumo de todas as configurações em uma aba principal
+    df_resumo = pd.DataFrame(resultados)
+    df_resumo.to_excel(writer, sheet_name='Resumo_Configuracoes', index=False)
+
+    writer.close()
+    print("Resultados salvos no arquivo 'resultados_ag.xlsx'.")
+
+
 
     print("RESULTADOS MIL TESTES")
 
-    # Segunda fase: Reexecutar para os 5 problemas e salvar os melhores resultados
     problemas = [
         ['SEND', 'MORE', 'MONEY'],  
         ['PARA', 'AMAPA', 'GOIAS'], 
@@ -311,7 +328,7 @@ def executar_testes():
                 tempo_execucao_individual = fim - inicio
                 tempos_execucao.append(tempo_execucao_individual)
 
-                if fitness == 0:  # Solução válida
+                if fitness == 0:  
                     convergencias += 1
 
             tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
@@ -329,10 +346,10 @@ def executar_testes():
             }   
             melhores_resultados.append(resultado_final)
 
-    # Ordenar e escolher os melhores resultados
+    
     melhores_resultados_ordenados = sorted(melhores_resultados, key=lambda x: (x['percentual_convergencia'], -x['tempo_medio']), reverse=True)
 
-    # Salvar os melhores resultados em um arquivo Excel
+    
     print(melhores_resultados_ordenados)
     df_melhores = pd.DataFrame(melhores_resultados_ordenados)  # Agora salva todas as melhores configurações
     df_melhores.to_excel('melhores_resultados_ag.xlsx', index=False)
