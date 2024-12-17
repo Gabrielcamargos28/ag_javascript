@@ -63,8 +63,29 @@
 
         <div class="form-group">
             <label for="tipo_crossover">Tipo de Crossover:</label>
-            <input type="text" id="tipo_crossover" name="tipo_crossover" value="C1">
+            <select name="tipo_crossover" id="tipo_crossover">
+                <option value="C1">Crossover Ciclico</option>
+                <option value="C2">Crossover Pmx</option>
+            </select>
         </div>
+
+        <div class="form-group">
+            <label for="metodo_selecao">Metodo de seleção:</label>
+            <select name="metodo_selecao" id="metodo_selecao">
+                <option value="S1">Seleção roleta</option>
+                <option value="S2">Seleção torneio</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="metodo_reinsercao">Metodo de seleção:</label>
+            <select name="metodo_reinsercao" id="metodo_reinsercao">
+                <option value="R1">Reinsercao Ordenada</option>
+                <option value="R2">Reinsercao Elitismo</option>
+            </select>
+        </div>
+
+        
 
         <button type="submit" class="button">Rodar Algoritmo</button>
     </form>
@@ -81,6 +102,8 @@
             const taxaCrossover = parseFloat(document.getElementById('taxaCrossover').value);
             const taxaMutacao = parseFloat(document.getElementById('taxaMutacao').value);
             const tipoCrossover = document.getElementById('tipo_crossover').value;
+            const metodo_selecao = document.getElementById('metodo_selecao').value;
+            const metodo_reinsercao = document.getElementById('metodo_reinsercao').value;
 
             const palavras = palavrasInput.split(',').map(p => p.trim());
 
@@ -90,7 +113,9 @@
                 tamanho_pop: tamanhoPop,
                 taxa_crossover: taxaCrossover,
                 taxa_mutacao: taxaMutacao,
-                //tipo_crossover: tipoCrossover
+                metodo_selecao: metodo_selecao,
+                tipo_crossover: tipoCrossover,
+                metodo_reinsercao: metodo_reinsercao
             };
 
             fetch('http://127.0.0.1:5000/solucao', {
