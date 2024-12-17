@@ -2,39 +2,37 @@ import time
 import pandas as pd
 import random
 
-# Função para calcular o fitness de um indivíduo
+
+
 def calcular_fitness(individuo, letras, palavras):
     print(f"Calculando fitness para indivíduo: {individuo}")
     letter_to_digit = {letras[i]: individuo[i] for i in range(len(letras))}
 
     def palavra_para_numero(palavra):
         numero = ''.join([str(letter_to_digit[letra]) for letra in palavra])
-        if numero[0] == '0':  # Não pode começar com zero
-            return None
         return int(numero)
 
     valores_palavras = [palavra_para_numero(palavra) for palavra in palavras]
     if None in valores_palavras:
-        return float('inf')  # Fitness alto se houver número inválido
+        return float('inf')
 
     soma = sum(valores_palavras[:-1])
     resultado = valores_palavras[-1]
     fitness = abs(soma - resultado)
 
     print(f"Fitness calculado: {fitness}")
+
     return fitness
 
-# Função para gerar uma população inicial
 def gerar_populacao_inicial(tamanho, letras):
     print("Gerando população inicial...")
     populacao = []
     while len(populacao) < tamanho:
-        individuo = random.sample(range(10), len(letras))  # Evita repetição de números
+        individuo = random.sample(range(10), len(letras))  
         populacao.append(individuo)
     print(f"População inicial gerada com {len(populacao)} indivíduos.")
     return populacao
 
-# Função de mutação
 def mutacao(individuo, taxa_mutacao):
     print(f"Mutando indivíduo: {individuo}")
     if random.random() < taxa_mutacao:
@@ -43,36 +41,31 @@ def mutacao(individuo, taxa_mutacao):
         print(f"Indivíduo após mutação: {individuo}")
     return individuo
 
-# Função de crossover cíclico
 def crossover_ciclico(pai1, pai2):
     filho1 = pai1.copy()
     filho2 = pai2.copy()
     
-    # Marcadores para saber quais genes já foram tratados
     visitados1 = [False] * len(pai1)
     visitados2 = [False] * len(pai2)
     
     i = 0
-    while not all(visitados1):  # Continua até todos os genes de filho1 serem preenchidos
+    while not all(visitados1):
         if not visitados1[i]:
-            # Preenche o gene do filho1 com o gene correspondente do pai2
             filho1[i] = pai2[i]
             visitados1[i] = True
             
-            # Busca a próxima posição no ciclo
             i = pai1.index(filho1[i]) if filho1[i] in pai1 else (i + 1) % len(pai1)
         else:
-            # Se o gene de filho1 já foi visitado, passa para o próximo
+           
             i = (i + 1) % len(pai1)
     
-    # Preenche os genes restantes do filho2
+    
     for j in range(len(pai2)):
         if not visitados2[j]:
             filho2[j] = pai1[j]
     
     return filho1, filho2
 
-# Função de crossover PMX
 def crossover_pmx(pai1, pai2):
     print(f"Realizando crossover PMX entre pais: {pai1} e {pai2}")
     size = len(pai1)
@@ -99,7 +92,6 @@ def crossover_pmx(pai1, pai2):
     print(f"Filhos gerados: {filho1}, {filho2}")
     return filho1, filho2
 
-# Função de crossover
 def crossover(pai1, pai2, tipo_crossover):
     print(f"Realizando crossover do tipo {tipo_crossover}")
     if tipo_crossover == 'C1':
@@ -109,16 +101,15 @@ def crossover(pai1, pai2, tipo_crossover):
     else:
         raise ValueError(f"Tipo de crossover desconhecido: {tipo_crossover}")
 
-# Função de seleção por roleta
+
 def selecao_roleta(populacao, fitness):
     print("Selecionando pais por roleta...")
-    total_fitness = sum([1 / (f + 1e-6) for f in fitness])  # Evitar divisão por zero
+    total_fitness = sum([1 / (f + 1e-6) for f in fitness])  
     chances = [1 / (f + 1e-6) / total_fitness for f in fitness]
     selecionados = random.choices(populacao, weights=chances, k=2)
     print(f"Pais selecionados: {selecionados}")
     return selecionados
 
-# Função de seleção por torneio
 def selecao_torneio(populacao, fitness, tamanho_torneio=3):
     print(f"Selecionando pais por torneio de tamanho {tamanho_torneio}...")
     pais = []
@@ -128,9 +119,9 @@ def selecao_torneio(populacao, fitness, tamanho_torneio=3):
     print(f"Pais selecionados: {pais}")
     return pais
 
-# Função de algoritmo genético
+
 def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, tipo_crossover, metodo_selecao):
-    letras = list(set(''.join(palavras)))  # Obter as letras únicas
+    letras = list(set(''.join(palavras))) 
     print(f"Letras únicas encontradas: {letras}")
     populacao = gerar_populacao_inicial(tamanho_pop, letras)
 
@@ -178,7 +169,6 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
 
     return {'fitness': min(fitness), 'solucao': dict(zip(letras, melhor_individuo))}
 
-# Função para registrar os resultados em um arquivo txt
 def registrar_resultados_txt(resultados_completos, arquivo='resultados_ag.txt'):
     print(f"Registrando resultados em {arquivo}...")
     with open(arquivo, 'a') as f:
@@ -191,7 +181,6 @@ def registrar_resultados_txt(resultados_completos, arquivo='resultados_ag.txt'):
             f.write(f"Solução: {resultado['solucao']}\n")
             f.write("-" * 50 + "\n")
 
-# Função para executar múltiplas configurações
 def executar_experimentos(palavras, geracoes, tamanho_pop, combinacoes_parametros):
     print("Executando experimentos...")
     resultados_completos = []
@@ -212,10 +201,8 @@ def executar_experimentos(palavras, geracoes, tamanho_pop, combinacoes_parametro
 
     df_resultados = pd.DataFrame(resultados_completos)
     df_resultados.to_excel('resultados_completos_ag.xlsx', index=False)
-
     registrar_resultados_txt(resultados_completos)
 
-# Definindo as combinações de parâmetros
 combinacoes_parametros = [
      (0.6, 0.05, 'C1', 'S1'),
     (0.6, 0.05, 'C1', 'S2'),
@@ -229,10 +216,15 @@ combinacoes_parametros = [
     (0.6, 0.1, 'C1', 'S2'),
     (0.6, 0.1, 'C2', 'S1'),
     (0.6, 0.1, 'C2', 'S2'),
-    (0.8, 0.1, 'C1', 'S1'),
-    (0.8, 0.1, 'C1', 'S2'),
+    (0.3, 0.1, 'C1', 'S1'),
+    (0.7, 0.1, 'C1', 'S2'),
+    (0.9, 0.04, 'C1', 'S1'),
+    (0.9, 0.1, 'C1', 'S2'),
+    (0.8, 0.02, 'C1', 'S2'),
     (0.8, 0.1, 'C2', 'S1'),
-    (0.8, 0.1, 'C2', 'S2')
+    (0.8, 0.1, 'C2', 'S2'),
+    (0.3, 0.1, 'C2', 'S2')
+    
 ]
 
 # Definir as palavras a serem usadas no experimento

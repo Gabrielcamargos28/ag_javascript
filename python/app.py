@@ -10,8 +10,6 @@ def calcular_fitness(individuo, letras, palavras):
 
     def palavra_para_numero(palavra):
         numero = ''.join([str(letter_to_digit[letra]) for letra in palavra])
-        if numero[0] == '0': 
-            return None
         return int(numero)
 
 
@@ -111,7 +109,6 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
             melhor_individuo = populacao[fitness.index(melhor_fitness)]
 
         if melhor_fitness == 0:
-            
             return dict(zip(letras, melhor_individuo)), melhor_fitness
 
         
@@ -126,7 +123,6 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
     return dict(zip(letras, melhor_individuo)), melhor_fitness
 
 
-@app.route('/solucao', methods=['POST'])
 @app.route('/solucao', methods=['POST'])
 def obter_solucao():
     data = request.get_json()
