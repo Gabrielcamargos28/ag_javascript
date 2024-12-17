@@ -2,10 +2,37 @@ from flask import Flask, request, jsonify
 import random
 import time
 from flask_cors import CORS
-import pandas as pd  
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
+
+def corrigir_individuo(individuo, tamanho, letras_inicialmente_nao_zero=None):
+    numeros_disponiveis = set(range(10))  # Inicializa todos os números disponíveis
+    corrigido = list(individuo)  # Copia o indivíduo atual
+    usados = set()  # Conjunto para rastrear números usados
+    
+    # Garante que números não se repitam
+    for i in range(tamanho):
+        if corrigido[i] in usados:  # Se o número já foi usado
+            novo_numero = numeros_disponiveis - usados  # Calcula números disponíveis
+            if not novo_numero:  # Garante que ainda há números disponíveis
+                raise ValueError("Não há números suficientes para corrigir o indivíduo.")
+            corrigido[i] = (novo_numero).pop()  # Substitui por um número disponível
+        usados.add(corrigido[i])  # Marca o número como usado
+
+    # Garante que dígitos de letras não podem ser zero
+    if letras_inicialmente_nao_zero:
+        for indice in letras_inicialmente_nao_zero:
+            if corrigido[indice] == 0:  # Se o número é zero
+                novo_numero = numeros_disponiveis - usados  # Calcula números disponíveis
+                if not novo_numero:
+                    raise ValueError("Não há números suficientes para corrigir o indivíduo.")
+                corrigido[indice] = (novo_numero).pop()
+                usados.add(corrigido[indice])  # Marca como usado
+    
+    return corrigido
+
 
 # Fitness Function: |(SEND + MORE) - MONEY|
 def calcular_fitness(individuo, letras, palavras):
@@ -16,7 +43,7 @@ def calcular_fitness(individuo, letras, palavras):
         for letra in palavra:
             if letra not in letter_to_digit:
                 print(f"Erro: A letra {letra} não está mapeada para um número.")
-                return None  # Ou pode retornar um valor especial
+                return None
             numero += str(letter_to_digit[letra])
         return int(numero)
 
@@ -24,7 +51,7 @@ def calcular_fitness(individuo, letras, palavras):
     for palavra in palavras:
         numero = palavra_para_numero(palavra)
         if numero is None:
-            return float('inf')  # Caso algum erro aconteça na conversão
+            return float('inf')
 
         valores_palavras.append(numero)
 
@@ -32,8 +59,6 @@ def calcular_fitness(individuo, letras, palavras):
     resultado = valores_palavras[-1]
     return abs(soma - resultado)
 
-
-# População Inicial aleatória sem repetições
 def gerar_populacao_inicial(tamanho, letras):
     if len(letras) > 10:
         raise ValueError(f"O número de letras ({len(letras)}) é maior do que o número de dígitos disponíveis (10).")
@@ -48,33 +73,30 @@ def mutacao(individuo, taxa_mutacao):
     if random.random() < taxa_mutacao:
         i, j = random.sample(range(len(individuo)), 2)
         individuo[i], individuo[j] = individuo[j], individuo[i]
-    return individuo
+    return corrigir_individuo(individuo, len(individuo))
 
 # Crossover Ciclico (C1)
 def crossover_ciclico(pai1, pai2):
     filho1 = pai1.copy()
     filho2 = pai2.copy()
-    
+
     visitados1 = [False] * len(pai1)
     visitados2 = [False] * len(pai2)
-    
+
     i = 0
-    while not all(visitados1):  
+    while not all(visitados1):
         if not visitados1[i]:
-            
             filho1[i] = pai2[i]
             visitados1[i] = True
-            
             i = pai1.index(filho1[i]) if filho1[i] in pai1 else (i + 1) % len(pai1)
         else:
-
             i = (i + 1) % len(pai1)
-    
+
     for j in range(len(pai2)):
         if not visitados2[j]:
             filho2[j] = pai1[j]
-    
-    return filho1, filho2
+
+    return corrigir_individuo(filho1, len(filho1)), corrigir_individuo(filho2, len(filho2))
 
 # Crossover PMX (C2)
 def crossover_pmx(pai1, pai2):
@@ -96,7 +118,7 @@ def crossover_pmx(pai1, pai2):
 
     mapear(filho1, pai1)
     mapear(filho2, pai2)
-    return filho1, filho2
+    return corrigir_individuo(filho1, size), corrigir_individuo(filho2, size)
 
 # Seleção: Roleta (S1) ou Torneio (S2)
 def selecao_roleta(populacao, fitness):
@@ -126,6 +148,8 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
     melhor_fitness, melhor_individuo = float('inf'), None
     geracao_melhor = 0
     
+    inicio = time.time()
+
     for g in range(geracoes):
         fitness = [calcular_fitness(ind, letras, palavras) for ind in populacao]
 
@@ -156,11 +180,12 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
             melhor_fitness = melhor_atual
             melhor_individuo = populacao[fitness.index(melhor_fitness)]
             geracao_melhor = g
-            
+
         if melhor_fitness == 0:
             break
-
-    return dict(zip(letras, melhor_individuo)), melhor_fitness, geracao_melhor
+        
+    tempo_execucao = time.time() - inicio
+    return dict(zip(letras, melhor_individuo)), melhor_fitness, geracao_melhor, tempo_execucao
 
 @app.route('/solucao', methods=['POST'])
 def obter_solucao():
@@ -173,190 +198,161 @@ def obter_solucao():
     metodo_selecao = data['metodo_selecao']
     tipo_crossover = data['tipo_crossover']
     metodo_reinsercao = data['metodo_reinsercao']
-    
+
     convergencia_encontrada = False
     num_execucoes = 0
     inicio = time.time()
-    
-    while not convergencia_encontrada and num_execucoes < 1000:  # Executar até achar a solução ou 1000 execuções
+
+    while not convergencia_encontrada and num_execucoes < 1000:
         num_execucoes += 1
-        
-        solucao, fitness, geracao_melhor = algoritmo_genetico(
-            palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, 
-            metodo_selecao, tipo_crossover, metodo_reinsercao
-        )
-        
+        print(f"Execução {num_execucoes}/1000")
+
+        solucao, fitness, geracao_melhor, tempo_execucao = algoritmo_genetico(
+            palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao,
+            metodo_selecao, tipo_crossover, metodo_reinsercao)
+
         if fitness == 0:
             convergencia_encontrada = True
 
-    fim = time.time()
-    
-    if not convergencia_encontrada:
-        return jsonify({
-            'erro': 'Não foi possível encontrar uma solução válida em 1000 execuções.'
-        })
-    
-    return jsonify({
-        'solucao': solucao,
-        'fitness': fitness,
-        'geracao_melhor': geracao_melhor,
-        'tempo_execucao': fim - inicio,
-        'num_execucoes': num_execucoes
-    })
+    if convergencia_encontrada:
+        return jsonify({'solucao': solucao, 'fitness': fitness, 'geracao_melhor': geracao_melhor, 'tempo_execucao': tempo_execucao})
+    else:
+        return jsonify({'error': 'Solução não encontrada após 1000 execuções'}), 500
 
-
+if __name__ == "__main__":
+    app.run(debug=True)
+    
+    
 @app.route('/report', methods=['GET'])
 def executar_testes():
     print("INICIANDO")
-    # Primeira fase: Realizar 24 combinações e salvar resultados
-    palavras = ['SEND', 'MORE', 'MONEY']
+    palavras_problema1 = ['SEND', 'MORE', 'MONEY']
     geracoes = 50
     tamanho_pop = 100
 
-    configuracoes = []
-    resultados = []
-    writer = pd.ExcelWriter('resultados_ag.xlsx', engine='xlsxwriter')  # Cria um writer para o Excel
-
-    # Configurações de teste
+    # Parâmetros das configurações
     taxas_crossover = [0.6, 0.8]
     taxas_mutacao = [0.05, 0.1]
     metodos_selecao = ['S1', 'S2']
     tipos_crossover = ['C1', 'C2']
     metodos_reinsercao = ['R1', 'R2']
 
-    for idx, (tc, tm, sel, cx, rein) in enumerate([
-        (tc, tm, sel, cx, rein)
-        for tc in taxas_crossover
-        for tm in taxas_mutacao
-        for sel in metodos_selecao
-        for cx in tipos_crossover
-        for rein in metodos_reinsercao
-    ]):
-        taxa_crossover = 0.8 if rein == 'R2' else tc
+    configuracoes = []
+    dados_completos = []
 
-        configuracao = {
-            'taxa_crossover': taxa_crossover,
-            'taxa_mutacao': tm,
-            'metodo_selecao': sel,
-            'tipo_crossover': cx,
-            'metodo_reinsercao': rein
-        }
-        configuracoes.append(configuracao)
+    # 1. Executar 24 configurações com 1000 execuções cada
+    for tc in taxas_crossover:
+        for tm in taxas_mutacao:
+            for sel in metodos_selecao:
+                for cx in tipos_crossover:
+                    for rein in metodos_reinsercao:
+                        taxa_crossover = 0.8 if rein == 'R2' else tc
 
-        convergencias = 0
-        tempos_execucao = []
-        resultados_detalhados = []
+                        configuracao = {
+                            'taxa_crossover': taxa_crossover,
+                            'taxa_mutacao': tm,
+                            'metodo_selecao': sel,
+                            'tipo_crossover': cx,
+                            'metodo_reinsercao': rein
+                        }
+                        print(f"Executando configuração: {configuracao}")
 
-        for i in range(1000):  # 1000 iterações por configuração
-            print(f"Executando configuração {idx + 1}/24, iteração {i + 1}/1000")
-            inicio = time.time()
-            solucao, fitness, geracao_melhor = algoritmo_genetico(
-                palavras, geracoes, tamanho_pop,
-                taxa_crossover, tm, sel, cx, rein
-            )
-            fim = time.time()
-            tempo_execucao_individual = fim - inicio
-            tempos_execucao.append(tempo_execucao_individual)
+                        convergencias = 0
+                        tempos_execucao = []
+                        for i in range(1000):  # 1000 execuções
+                            print(f"Executando {i + 1}/1000")
+                            inicio = time.time()
+                            solucao, fitness, geracao_melhor = algoritmo_genetico(
+                                palavras_problema1, geracoes, tamanho_pop,
+                                taxa_crossover, tm, sel, cx, rein
+                            )
+                            fim = time.time()
+                            tempo_execucao = fim - inicio
+                            tempos_execucao.append(tempo_execucao)
 
-            if fitness == 0:  # Solução válida
-                convergencias += 1
+                            if fitness == 0:  # Considera convergência válida
+                                convergencias += 1
 
-            # Salva os resultados individuais
-            resultado_individual = {
-                'execucao': i + 1,
-                'tempo_execucao': tempo_execucao_individual,
-                'fitness': fitness,
-                'solucao_valida': fitness == 0
-            }
-            resultados_detalhados.append(resultado_individual)
+                            dados_completos.append({
+                                'configuracao': str(configuracao),
+                                'execucao': i + 1,
+                                'fitness': fitness,
+                                'tempo_execucao': tempo_execucao,
+                                'geracao_melhor': geracao_melhor
+                            })
 
-        # Persistindo os 1000 resultados individuais em uma aba separada
-        df_detalhado = pd.DataFrame(resultados_detalhados)
-        aba_nome = f'Config_{idx + 1}'  # Nome da aba no Excel
-        df_detalhado.to_excel(writer, sheet_name=aba_nome, index=False)
+                        percentual_convergencia = (convergencias / 1000) * 100
+                        tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
 
-        # Resumo da configuração
-        tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
-        resultado = {
-            'taxa_crossover': taxa_crossover,
-            'taxa_mutacao': tm,
-            'metodo_selecao': sel,
-            'tipo_crossover': cx,
-            'metodo_reinsercao': rein,
-            'percentual_convergencia': (convergencias / 1000) * 100,
-            'tempo_medio': tempo_medio
-        }
-        resultados.append(resultado)
+                        configuracoes.append({
+                            'configuracao': configuracao,
+                            'percentual_convergencia': percentual_convergencia,
+                            'tempo_medio': tempo_medio
+                        })
 
-    # Salva o resumo de todas as configurações em uma aba principal
-    df_resumo = pd.DataFrame(resultados)
-    df_resumo.to_excel(writer, sheet_name='Resumo_Configuracoes', index=False)
+    # Salvar todas as execuções em um Excel
+    df_dados = pd.DataFrame(dados_completos)
+    df_dados.to_excel('execucoes_24_configuracoes.xlsx', index=False)
 
-    writer.close()
-    print("Resultados salvos no arquivo 'resultados_ag.xlsx'.")
+    print("Resultados completos salvos em 'execucoes_24_configuracoes.xlsx'.")
 
+    # 2. Selecionar as 4 melhores configurações com base em convergência e tempo
+    melhores_configuracoes = sorted(configuracoes, key=lambda x: (x['percentual_convergencia'], -x['tempo_medio']), reverse=True)[:4]
+    print("4 melhores configurações selecionadas:")
+    for i, config in enumerate(melhores_configuracoes, start=1):
+        print(f"{i}: {config}")
 
-
-    print("RESULTADOS MIL TESTES")
-
+    # 3. Executar as 4 melhores configurações nos 5 problemas
     problemas = [
-        ['SEND', 'MORE', 'MONEY'],  
-        ['PARA', 'AMAPA', 'GOIAS'], 
-        ['CROSS', 'ROADS', 'DANGER'], 
-        ['EAT', 'THAT', 'APPLE'], 
-        ['DONALD', 'GERALD', 'ROBERT'],
-        ['COCA', 'COLA', 'OASIS'],
+        ['SEND', 'MORE', 'MONEY'],
+        ['PARA', 'AMAPA', 'GOIAS'],
+        ['CROSS', 'ROADS', 'DANGER'],
+        ['EAT', 'THAT', 'APPLE'],
+        ['DONALD', 'GERALD', 'ROBERT']
     ]
 
-    melhores_resultados = []
+    resultados_finais = []
 
-    for config in melhores_configuracoes:
-        print("EXECUTANDO MELHORES 4 CONFIGURACOES")
+    for melhor_config in melhores_configuracoes:
         for palavras in problemas:
             convergencias = 0
             tempos_execucao = []
-            for i in range(10):  # Correção: agora com um loop de 10 iterações por problema
-                print(f"Executando iteração melhores configuracoes {i + 1}/10")
+            for i in range(1000):
+                print(f"Executando no laço das 4 melhores {i + 1}/1000")
                 inicio = time.time()
                 solucao, fitness, geracao_melhor = algoritmo_genetico(
                     palavras, geracoes, tamanho_pop,
-                    config['taxa_crossover'], config['taxa_mutacao'],
-                    config['metodo_selecao'], config['tipo_crossover'],
-                    config['metodo_reinsercao']
+                    melhor_config['configuracao']['taxa_crossover'],
+                    melhor_config['configuracao']['taxa_mutacao'],
+                    melhor_config['configuracao']['metodo_selecao'],
+                    melhor_config['configuracao']['tipo_crossover'],
+                    melhor_config['configuracao']['metodo_reinsercao']
                 )
                 fim = time.time()
-                tempo_execucao_individual = fim - inicio
-                tempos_execucao.append(tempo_execucao_individual)
+                tempo_execucao = fim - inicio
+                tempos_execucao.append(tempo_execucao)
 
-                if fitness == 0:  
+                if fitness == 0:
                     convergencias += 1
 
+            percentual_convergencia = (convergencias / 1000) * 100
             tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
-            resultado_final = {
-                   'taxa_crossover': config['taxa_crossover'],
-                   'taxa_mutacao': config['taxa_mutacao'],
-                   'metodo_selecao': config['metodo_selecao'],
-                   'tipo_crossover': config['tipo_crossover'],
-                   'metodo_reinsercao': config['metodo_reinsercao'],
-                   'percentual_convergencia': (convergencias / 5000) * 100,
-                   'tempo_medio': tempo_medio,
-                   'fitness': fitness,
-                   'palavras': palavras,
-                   'configuracao': configuracao
-            }   
-            melhores_resultados.append(resultado_final)
 
-    
-    melhores_resultados_ordenados = sorted(melhores_resultados, key=lambda x: (x['percentual_convergencia'], -x['tempo_medio']), reverse=True)
+            resultados_finais.append({
+                'configuracao': melhor_config['configuracao'],
+                'problema': palavras,
+                'percentual_convergencia': percentual_convergencia,
+                'tempo_medio': tempo_medio,
+                'fitness': fitness,
+                'palabras': palavras
+            })
 
-    
-    print(melhores_resultados_ordenados)
-    df_melhores = pd.DataFrame(melhores_resultados_ordenados)  # Agora salva todas as melhores configurações
-    df_melhores.to_excel('melhores_resultados_ag.xlsx', index=False)
+    # Salvar os resultados finais das 4 melhores configurações
+    df_resultados_finais = pd.DataFrame(resultados_finais)
+    df_resultados_finais.to_excel('resultados_finais_4_configuracoes.xlsx', index=False)
 
-    print("\nResultados salvos no arquivo 'resultados_ag.xlsx' e 'melhores_resultados_ag.xlsx'.")
+    print("Resultados finais salvos em 'resultados_finais_4_configuracoes.xlsx'.")
 
 
 if __name__ == '__main__':
-    #executar_testes()
     app.run(debug=True)

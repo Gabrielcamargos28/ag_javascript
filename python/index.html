@@ -90,7 +90,7 @@
 
         <!-- Botão para gerar o relatório -->
         
-        <button id="gerarRelatorio" class="button">Gerar Relatório</button>
+    <button id="gerarRelatorio" class="button">Gerar Relatório</button>
         
 
     <div class="output" id="output"></div>
@@ -142,9 +142,9 @@
                     let more = '';
                     let money = '';
 
-                    for (let letra of 'SEND') send += data.solucao[letra] !== undefined ? data.solucao[letra] : 0;
-                    for (let letra of 'MORE') more += data.solucao[letra] !== undefined ? data.solucao[letra] : 0;
-                    for (let letra of 'MONEY') money += data.solucao[letra] !== undefined ? data.solucao[letra] : 0;
+                    for (let letra of 'SEND') send += data.solucao[letra]
+                    for (let letra of 'MORE') more += data.solucao[letra]
+                    for (let letra of 'MONEY') money += data.solucao[letra]
 
                     outputDiv.innerHTML += `<br>Verificação: ${send} + ${more} = ${money}`;
                 } else {
@@ -159,22 +159,6 @@
                 console.error('Erro:', error);
                 const outputDiv = document.getElementById('output');
                 outputDiv.innerHTML = 'Erro ao processar a solicitação. Tente novamente.';
-            });
-        });
-        document.getElementById('gerarRelatorio').addEventListener('click', function() {
-            fetch('http://127.0.0.1:5000/report', {
-                method: 'GET',
-            })
-            .then(response => response.json())
-            .then(data => {
-                const outputDiv = document.getElementById('output');
-                outputDiv.innerHTML = `<h2>Relatório Gerado:</h2>`;
-                outputDiv.innerHTML += `<p>${data.status}</p>`;
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                const outputDiv = document.getElementById('output');
-                outputDiv.innerHTML = 'Erro ao gerar o relatório. Tente novamente.';
             });
         });
     </script>
