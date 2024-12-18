@@ -90,7 +90,7 @@
 
         <!-- Botão para gerar o relatório -->
         
-    <button id="gerarRelatorio" class="button">Gerar Relatório</button>
+        <button id="gerarRelatorio" class="button">Gerar Relatório</button>
         
 
     <div class="output" id="output"></div>
@@ -98,70 +98,100 @@
     <script>
         document.getElementById('inputForm').addEventListener('submit', function(event) {
             event.preventDefault();
-
+        
             const palavrasInput = document.getElementById('palavras').value;
             const geracoes = parseInt(document.getElementById('geracoes').value);
             const tamanhoPop = parseInt(document.getElementById('tamanhoPop').value);
             const taxaCrossover = parseFloat(document.getElementById('taxaCrossover').value);
             const taxaMutacao = parseFloat(document.getElementById('taxaMutacao').value);
             const tipoCrossover = document.getElementById('tipo_crossover').value;
-            const metodo_selecao = document.getElementById('metodo_selecao').value;
-            const metodo_reinsercao = document.getElementById('metodo_reinsercao').value;
-
+            const metodoSelecao = document.getElementById('metodo_selecao').value;
+            const metodoReinsercao = document.getElementById('metodo_reinsercao').value;
+        
             const palavras = palavrasInput.split(',').map(p => p.trim());
-
+        
+            if (palavras.length !== 3) {
+                alert('Por favor, insira exatamente três palavras separadas por vírgula.');
+                return;
+            }
+        
             const requestData = {
                 palavras: palavras,
                 geracoes: geracoes,
                 tamanho_pop: tamanhoPop,
                 taxa_crossover: taxaCrossover,
                 taxa_mutacao: taxaMutacao,
-                metodo_selecao: metodo_selecao,
+                metodo_selecao: metodoSelecao,
                 tipo_crossover: tipoCrossover,
-                metodo_reinsercao: metodo_reinsercao
+                metodo_reinsercao: metodoReinsercao
             };
-
+        
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '<p>Processando, por favor aguarde...</p>';
+        
             fetch('http://127.0.0.1:5000/solucao', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestData)
             })
             .then(response => response.json())
             .then(data => {
-                const outputDiv = document.getElementById('output');
                 outputDiv.innerHTML = `<h2>Solução Encontrada:</h2>`;
-
+        
                 if (data.solucao) {
                     for (const [letra, valor] of Object.entries(data.solucao)) {
                         outputDiv.innerHTML += `${letra}: ${valor !== undefined ? valor : 'Não definido'}<br>`;
                     }
-
-                    let send = '';
-                    let more = '';
-                    let money = '';
-
-                    for (let letra of 'SEND') send += data.solucao[letra]
-                    for (let letra of 'MORE') more += data.solucao[letra]
-                    for (let letra of 'MONEY') money += data.solucao[letra]
-
+        
+                    let send = '', more = '', money = '';
+                    for (let letra of 'SEND') send += data.solucao[letra];
+                    for (let letra of 'MORE') more += data.solucao[letra];
+                    for (let letra of 'MONEY') money += data.solucao[letra];
+        
                     outputDiv.innerHTML += `<br>Verificação: ${send} + ${more} = ${money}`;
                 } else {
                     outputDiv.innerHTML += `<p>Não foi possível calcular a solução.</p>`;
                 }
-
-                outputDiv.innerHTML += `<br><strong>Melhor Fitness:</strong> ${data.fitness !== undefined ? data.fitness : 'Não disponível'}`;
-                outputDiv.innerHTML += `<br><strong>Tempo de execução:</strong> ${data.tempo_execucao !== undefined ? data.tempo_execucao : 'Não disponível'}`;
-                console.log(data);
+                console.log(data)
+        
+                outputDiv.innerHTML += `<br><strong>Melhor Fitness:</strong> ${data.fitness}`;
+                outputDiv.innerHTML += `<br><strong>Tempo de execução:</strong> ${data.tempo_execucao || 'Não disponível'}`;
             })
             .catch(error => {
                 console.error('Erro:', error);
-                const outputDiv = document.getElementById('output');
                 outputDiv.innerHTML = 'Erro ao processar a solicitação. Tente novamente.';
             });
         });
+        
+        document.getElementById('gerarRelatorio').addEventListener('click', function() {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '<p>Gerando relatório...</p>';
+        
+            fetch('http://127.0.0.1:5000/report', { method: 'GET' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao obter o relatório do servidor.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    outputDiv.innerHTML = `<h2>Relatório Gerado:</h2>`;
+                    outputDiv.innerHTML += `<p><strong>Status:</strong> ${data.status}</p>`;
+                    outputDiv.innerHTML += `<p><strong>Melhor Fitness:</strong> ${data.melhor_fitness}</p>`;
+                    outputDiv.innerHTML += `<p><strong>Tempo de Execução:</strong> ${data.tempo_execucao}</p>`;
+        
+                    outputDiv.innerHTML += `<h3>Parâmetros Utilizados:</h3>`;
+                    const params = data.parametros;
+                    for (const [chave, valor] of Object.entries(params)) {
+                        outputDiv.innerHTML += `<p>${chave}: ${valor}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    outputDiv.innerHTML = '<p>Erro ao gerar o relatório. Tente novamente.</p>';
+                });
+        });
+        
     </script>
-
 </body>
 </html>

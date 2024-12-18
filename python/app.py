@@ -7,57 +7,89 @@ import pandas as pd
 app = Flask(__name__)
 CORS(app)
 
-def corrigir_individuo(individuo, tamanho, letras_inicialmente_nao_zero=None):
-    numeros_disponiveis = set(range(10))  # Inicializa todos os números disponíveis
-    corrigido = list(individuo)  # Copia o indivíduo atual
-    usados = set()  # Conjunto para rastrear números usados
+letras = []
+def corrigir_individuo(individuo, tamanho, letras_nao_zero=None):
+    global letras
+    numeros_disponiveis = set(range(10))
+    corrigido = list(individuo)
+    usados = set()
     
-    # Garante que números não se repitam
     for i in range(tamanho):
-        if corrigido[i] in usados:  # Se o número já foi usado
-            novo_numero = numeros_disponiveis - usados  # Calcula números disponíveis
-            if not novo_numero:  # Garante que ainda há números disponíveis
+        if corrigido[i] in usados:
+            novo_numero = numeros_disponiveis - usados
+            if not novo_numero:
                 raise ValueError("Não há números suficientes para corrigir o indivíduo.")
-            corrigido[i] = (novo_numero).pop()  # Substitui por um número disponível
-        usados.add(corrigido[i])  # Marca o número como usado
+            corrigido[i] = (novo_numero).pop()
+        usados.add(corrigido[i])
 
-    # Garante que dígitos de letras não podem ser zero
-    if letras_inicialmente_nao_zero:
-        for indice in letras_inicialmente_nao_zero:
-            if corrigido[indice] == 0:  # Se o número é zero
-                novo_numero = numeros_disponiveis - usados  # Calcula números disponíveis
-                if not novo_numero:
-                    raise ValueError("Não há números suficientes para corrigir o indivíduo.")
-                corrigido[indice] = (novo_numero).pop()
-                usados.add(corrigido[indice])  # Marca como usado
-    
     return corrigido
 
+def identificar_letras_nao_zero(palavras):
+    letras_nao_zero = set()
+    for palavra in palavras:
+        if palavra: 
+            letras_nao_zero.add(palavra[0]) 
+    return list(letras_nao_zero)
 
-# Fitness Function: |(SEND + MORE) - MONEY|
+
 def calcular_fitness(individuo, letras, palavras):
+
     letter_to_digit = {letras[i]: individuo[i] for i in range(len(letras))}
 
+    for palavra in palavras:
+        if palavra and letter_to_digit[palavra[0]] == 0:
+            print(f"Erro: A letra '{palavra[0]}' não pode ser associada ao dígito 0.")
+            return float('inf')  
+
     def palavra_para_numero(palavra):
-        numero = ''
-        for letra in palavra:
-            if letra not in letter_to_digit:
-                print(f"Erro: A letra {letra} não está mapeada para um número.")
-                return None
-            numero += str(letter_to_digit[letra])
+        numero = ''.join(str(letter_to_digit[letra]) for letra in palavra)
         return int(numero)
+
 
     valores_palavras = []
     for palavra in palavras:
-        numero = palavra_para_numero(palavra)
-        if numero is None:
+        try:
+            numero = palavra_para_numero(palavra)
+            valores_palavras.append(numero)
+        except Exception as e:
+            print(f"Erro ao processar a palavra {palavra}: {e}")
             return float('inf')
-
-        valores_palavras.append(numero)
-
+        
     soma = sum(valores_palavras[:-1])
     resultado = valores_palavras[-1]
+
+    if not validar_soma_carry_over(palavras, valores_palavras, letter_to_digit):
+        return float('inf')
+
     return abs(soma - resultado)
+
+
+def validar_soma_carry_over(palavras, valores_palavras, letter_to_digit):
+    
+    palavras_revertidas = [palavra[::-1] for palavra in palavras]
+    max_len = max(len(palavra) for palavra in palavras_revertidas)
+
+    carry = 0
+    for i in range(max_len):
+        soma = carry
+        for j in range(len(palavras_revertidas) - 1): 
+            if i < len(palavras_revertidas[j]):
+                letra = palavras_revertidas[j][i]
+                soma += letter_to_digit[letra]
+
+        if i < len(palavras_revertidas[-1]):  
+            letra = palavras_revertidas[-1][i]
+            soma -= letter_to_digit[letra]
+
+        if soma >= 10:
+            carry = 1
+        else:
+            carry = 0
+
+        if carry == 1 and i == max_len - 1:
+            return False 
+    return True
+
 
 def gerar_populacao_inicial(tamanho, letras):
     if len(letras) > 10:
@@ -68,14 +100,12 @@ def gerar_populacao_inicial(tamanho, letras):
         populacao.append(individuo)
     return populacao
 
-# Mutacao: Troca de 2 posições
 def mutacao(individuo, taxa_mutacao):
     if random.random() < taxa_mutacao:
         i, j = random.sample(range(len(individuo)), 2)
         individuo[i], individuo[j] = individuo[j], individuo[i]
     return corrigir_individuo(individuo, len(individuo))
 
-# Crossover Ciclico (C1)
 def crossover_ciclico(pai1, pai2):
     filho1 = pai1.copy()
     filho2 = pai2.copy()
@@ -84,6 +114,7 @@ def crossover_ciclico(pai1, pai2):
     visitados2 = [False] * len(pai2)
 
     i = 0
+
     while not all(visitados1):
         if not visitados1[i]:
             filho1[i] = pai2[i]
@@ -98,7 +129,6 @@ def crossover_ciclico(pai1, pai2):
 
     return corrigir_individuo(filho1, len(filho1)), corrigir_individuo(filho2, len(filho2))
 
-# Crossover PMX (C2)
 def crossover_pmx(pai1, pai2):
     size = len(pai1)
     filho1, filho2 = [-1] * size, [-1] * size
@@ -140,18 +170,21 @@ def reinsercao_elitismo(populacao, filhos, fitness, letras, palavras):
     elite = sorted(populacao, key=lambda ind: calcular_fitness(ind, letras, palavras))[:elite_size]
     return elite + filhos[:len(populacao) - elite_size]
 
-# Algoritmo Genético Principal
 def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mutacao, metodo_selecao, tipo_crossover, metodo_reinsercao):
     global letras
-    letras = list(set(''.join(palavras)))
+    letras = list(set(''.join(palavras))) 
+    letras_nao_zero = identificar_letras_nao_zero(palavras)  
     populacao = gerar_populacao_inicial(tamanho_pop, letras)
+
+    populacao_corrigida = [corrigir_individuo(individuo, len(individuo), letras_nao_zero) for individuo in populacao]
+
     melhor_fitness, melhor_individuo = float('inf'), None
     geracao_melhor = 0
-    
+
     inicio = time.time()
 
     for g in range(geracoes):
-        fitness = [calcular_fitness(ind, letras, palavras) for ind in populacao]
+        fitness = [calcular_fitness(ind, letras, palavras) for ind in populacao_corrigida]
 
         if metodo_selecao == 'S1':
             selecao = selecao_roleta
@@ -160,7 +193,7 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
 
         nova_populacao = []
         while len(nova_populacao) < tamanho_pop:
-            pai1, pai2 = selecao(populacao, fitness)
+            pai1, pai2 = selecao(populacao_corrigida, fitness)
             if random.random() < taxa_crossover:
                 if tipo_crossover == 'C1':
                     filho1, filho2 = crossover_ciclico(pai1, pai2)
@@ -171,19 +204,22 @@ def algoritmo_genetico(palavras, geracoes, tamanho_pop, taxa_crossover, taxa_mut
             nova_populacao.extend([mutacao(filho1, taxa_mutacao), mutacao(filho2, taxa_mutacao)])
 
         if metodo_reinsercao == 'R1':
-            populacao = reinsercao_ordenada(populacao, nova_populacao, fitness, letras, palavras)
+            populacao_corrigida = reinsercao_ordenada(populacao_corrigida, nova_populacao, fitness, letras, palavras)
         else:
-            populacao = reinsercao_elitismo(populacao, nova_populacao, fitness, letras, palavras)
+            populacao_corrigida = reinsercao_elitismo(populacao_corrigida, nova_populacao, fitness, letras, palavras)
 
         melhor_atual = min(fitness)
+
         if melhor_atual < melhor_fitness:
             melhor_fitness = melhor_atual
-            melhor_individuo = populacao[fitness.index(melhor_fitness)]
+            melhor_individuo = populacao_corrigida[fitness.index(melhor_fitness)]
             geracao_melhor = g
-
-        if melhor_fitness == 0:
-            break
         
+        print(f"Geração {g + 1}/{geracoes}, Melhor Fitness: {melhor_fitness}")
+        if melhor_fitness == 0:
+            print("Solução encontrada!")
+            break
+
     tempo_execucao = time.time() - inicio
     return dict(zip(letras, melhor_individuo)), melhor_fitness, geracao_melhor, tempo_execucao
 
@@ -215,14 +251,12 @@ def obter_solucao():
             convergencia_encontrada = True
 
     if convergencia_encontrada:
+        print(solucao)
         return jsonify({'solucao': solucao, 'fitness': fitness, 'geracao_melhor': geracao_melhor, 'tempo_execucao': tempo_execucao})
     else:
         return jsonify({'error': 'Solução não encontrada após 1000 execuções'}), 500
 
-if __name__ == "__main__":
-    app.run(debug=True)
-    
-    
+
 @app.route('/report', methods=['GET'])
 def executar_testes():
     print("INICIANDO")
@@ -262,10 +296,11 @@ def executar_testes():
                         for i in range(1000):  # 1000 execuções
                             print(f"Executando {i + 1}/1000")
                             inicio = time.time()
-                            solucao, fitness, geracao_melhor = algoritmo_genetico(
-                                palavras_problema1, geracoes, tamanho_pop,
-                                taxa_crossover, tm, sel, cx, rein
+                            solucao, fitness, geracao_melhor, tempo_execucao = algoritmo_genetico(
+                            palavras_problema1, geracoes, tamanho_pop,
+                            taxa_crossover, tm, sel, cx, rein
                             )
+
                             fim = time.time()
                             tempo_execucao = fim - inicio
                             tempos_execucao.append(tempo_execucao)
@@ -355,4 +390,5 @@ def executar_testes():
 
 
 if __name__ == '__main__':
+    #executar_testes()
     app.run(debug=True)
